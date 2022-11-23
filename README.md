@@ -36,11 +36,6 @@ If you're looking to raise an issue with this module, please create a new issue 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-The module will create an automation task, and maintenance window, maintenance target as well as IAM docs and policies to run the automation task.
-In this maintenance window, any ec2 instance with SSM installed and a tag called 'Patching' with the value of 'Yes' or 'True' will attempt to be patched.
-
-Optionally, if you would like to patch manually, and view the process, this module also builds a resource group and approval rule, useable by patch manager in ssm
-
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.1 |
