@@ -220,10 +220,10 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
         name   = "InstanceId"
         values = ["{{RESOURCE_ID}}"]
       }
-#      parameter {
-#        name   = "ReportS3Bucket"
-#        values = ["${var.application_name}-ssm-patching-logs"]
-#      }
+      #      parameter {
+      #        name   = "ReportS3Bucket"
+      #        values = ["${var.application_name}-ssm-patching-logs"]
+      #      }
     }
   }
 }
