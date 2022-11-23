@@ -129,13 +129,13 @@ data "aws_elb_service_account" "default" {}
 data "aws_iam_policy_document" "ssm-admin-policy-doc" {
   statement {
     actions = ["s3:*",
-                "ec2:*",
-                "ssm:*",
-                "cloudwatch:*",
-                "cloudformation:*",
-                "iam:*",
-                "lambda:*"
-            ]
+      "ec2:*",
+      "ssm:*",
+      "cloudwatch:*",
+      "cloudformation:*",
+      "iam:*",
+      "lambda:*"
+    ]
     resources = ["*"]
   }
 }
@@ -148,7 +148,7 @@ resource "aws_iam_policy" "ssm-patching-iam-policy" {
 }
 
 resource "aws_iam_role" "ssm-patching-iam-role" {
-  name        = "ssm-patching-iam-role"
+  name = "ssm-patching-iam-role"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -176,7 +176,7 @@ resource "aws_iam_role_policy_attachment" "ssm-admin-automation" {
 
 resource "aws_ssm_maintenance_window" "ssm-maintenance-window" {
   name     = "${var.application_name}-maintenance-window"
-  schedule = "${var.patch_schedule}"
+  schedule = var.patch_schedule
   duration = 4
   cutoff   = 3
 }
