@@ -6,12 +6,28 @@
 
 ```hcl
 
-module "template" {
+module "ssm-auto-patching" {
 
   source = "github.com/ministryofjustice/modernisation-platform-terraform-module-template"
 
   tags             = local.tags
   application_name = local.application_name
+  account_number             = local.environment_management.account_ids[terraform.workspace]
+  application_name           = "jbtest"
+  enable_deletion_protection = false
+  idle_timeout               = "60"
+  loadbalancer_egress_rules  = local.jb_egress_rules
+  loadbalancer_ingress_rules = local.jb_ingress_rules
+  public_subnets             = data.aws_subnets.private.ids
+  region                     = local.region
+  vpc_all                    = "hmpps-test" # TODO: Find or create a local for this
+  force_destroy_bucket       = true
+  internal_lb                = true
+  tags = merge(
+    local.tags,
+    {
+      Name = "internal-loadbalancer"
+    },  
 
 }
 
