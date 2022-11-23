@@ -68,6 +68,7 @@ data "aws_iam_policy_document" "bucket_policy" {
     actions = [
       "s3:PutObject"
     ]
+
     resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket[0].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
     principals {
       type        = "AWS"
@@ -177,7 +178,7 @@ resource "aws_ssm_maintenance_window" "ssm-maintenance-window" {
   name     = "${var.application_name}-maintenance-window"
   schedule = "${var.patch_schedule}"
   duration = 4
-  cutoff   = 8
+  cutoff   = 3
 }
 
 ###### ssm maintenance target #####
