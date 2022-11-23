@@ -7,28 +7,21 @@
 ```hcl
 
 module "ssm-auto-patching" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-ssm-patching.git?ref="
+  count  = local.environment == "development" ? 1 : 0
+  providers = {
+    aws.bucket-replication = aws
+  }
 
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-module-template"
-
-  tags             = local.tags
-  application_name = local.application_name
   account_number             = local.environment_management.account_ids[terraform.workspace]
-  application_name           = "jbtest"
-  enable_deletion_protection = false
-  idle_timeout               = "60"
-  loadbalancer_egress_rules  = local.jb_egress_rules
-  loadbalancer_ingress_rules = local.jb_ingress_rules
-  public_subnets             = data.aws_subnets.private.ids
-  region                     = local.region
-  vpc_all                    = "hmpps-test" # TODO: Find or create a local for this
-  force_destroy_bucket       = true
-  internal_lb                = true
+  application_name           = local.application_name
+  vpc_all                    = "garden-sandbox"
   tags = merge(
     local.tags,
     {
-      Name = "internal-loadbalancer"
-    },  
-
+      Name = "ssm-patching"
+    },
+  )
 }
 
 ```
@@ -42,6 +35,11 @@ If you're looking to raise an issue with this module, please create a new issue 
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
+
+The module will create an automation task, and maintenance window, maintenance target as well as IAM docs and policies to run the automation task.
+In this maintenance window, any ec2 instance with SSM installed and a tag called 'Patching' with the value of 'Yes' or 'True' will attempt to be patched.
+
+Optionally, if you would like to patch manually, and view the process, this module also builds a resource group and approval rule, useable by patch manager in ssm
 
 | Name | Version |
 |------|---------|
