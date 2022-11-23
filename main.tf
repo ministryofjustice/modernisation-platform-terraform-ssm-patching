@@ -222,7 +222,7 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
       }
       parameter {
         name   = "ReportS3Bucket"
-        values = ["${var.application_name}-ssm-patching-logs"]
+        values = ["sprinkler-ssm-patching-logs20221123105556892400000001"]
       }
     }
   }
