@@ -203,7 +203,7 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
   max_errors       = 10
   priority         = 1
   task_type        = "AUTOMATION"
-  task_arn         = "AWS-PatchAsgInstance"
+  task_arn         = "AWS-PatchInstanceWithRollback"
   window_id        = aws_ssm_maintenance_window.ssm-maintenance-window.id
   service_role_arn = aws_iam_role.ssm-patching-iam-role.arn
 
