@@ -52,7 +52,7 @@ variable "patch_schedule" {
 variable "patch_key" {
   type        = string
   description = "Defaults as tag:Patching, but can be customised if pre existing tags and values want to be used"
-  default     = "tag:Patching"
+  default     = "Patching"
 }
 variable "patch_tag" {
   type        = string

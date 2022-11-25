@@ -190,7 +190,7 @@ resource "aws_ssm_maintenance_window_target" "ssm-maintenance-window-target" {
   resource_type = "INSTANCE"
 
   targets {
-    key    = "${var.patch_key}"
+    key    = "tag:${var.patch_key}"
     values = ["${var.patch_tag}"]
   }
 }
@@ -242,8 +242,8 @@ resource "aws_resourcegroups_group" "patch-resource-group" {
 		"AWS::EC2::Instance"
 	],
 	"TagFilters": [{
-		"Key": "Patching",
-		"Values": ["yes", "true", "Yes", "True"]
+		"Key": "${var.patch_key}",
+		"Values": "${var.patch_tag}"
 	}]
 }
 JSON
