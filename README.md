@@ -76,13 +76,13 @@ If you're looking to raise an issue with this module, please create a new issue 
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_number"></a> [account\_number](#input\_account\_number) | Account number of current environment | `string` | n/a | yes |
 | <a name="input_application_name"></a> [application\_name](#input\_application\_name) | Name of application | `string` | n/a | yes |
-| <a name="input_approval_days"></a> [approval\_days](#input\_approval\_days) | Number of days before the package is approved | `string` | `"7"` | no |
-| <a name="input_compliance_level"></a> [compliance\_level](#input\_compliance\_level) | Select the level of compliance | `string` | `"HIGH"` | no |
+| <a name="input_approval_days"></a> [approval\_days](#input\_approval\_days) | Number of days before the package is approved, used by the approval rule only, and is not required for the automation script | `string` | `"7"` | no |
+| <a name="input_compliance_level"></a> [compliance\_level](#input\_compliance\_level) | Select the level of compliance, used by the approval rule only, and is not required for the automation script. By default it's CRITICAL | `string` | `"CRITICAL"` | no |
 | <a name="input_existing_bucket_name"></a> [existing\_bucket\_name](#input\_existing\_bucket\_name) | The name of the existing bucket name. If no bucket is provided one will be created for them. | `string` | `""` | no |
 | <a name="input_force_destroy_bucket"></a> [force\_destroy\_bucket](#input\_force\_destroy\_bucket) | A boolean that indicates all objects (including any locked objects) should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable. | `bool` | `false` | no |
-| <a name="input_operating_system"></a> [operating\_system](#input\_operating\_system) | Operating system on the ec2 instance | `string` | `"CENTOS"` | no |
+| <a name="input_operating_system"></a> [operating\_system](#input\_operating\_system) | Operating system on the ec2 instance, used by the approval rule only, and is not required for the automation script | `string` | `"CENTOS"` | no |
 | <a name="input_patch_classification"></a> [patch\_classification](#input\_patch\_classification) | Operating system on the ec2 instance | `list(string)` | <pre>[<br>  "Security"<br>]</pre> | no |
-| <a name="input_patch_schedule"></a> [patch\_schedule](#input\_patch\_schedule) | Crontab on when to run the automation script | `string` | `"cron(00 08 ? * MON *)"` | no |
+| <a name="input_patch_schedule"></a> [patch\_schedule](#input\_patch\_schedule) | Crontab on when to run the automation script. | `string` | `"cron(00 08 ? * MON *)"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common tags to be used by all resources | `map(string)` | n/a | yes |
 | <a name="input_vpc_all"></a> [vpc\_all](#input\_vpc\_all) | The full name of the VPC (including environment) used to create resources | `string` | n/a | yes |
 
