@@ -190,8 +190,8 @@ resource "aws_ssm_maintenance_window_target" "ssm-maintenance-window-target" {
   resource_type = "INSTANCE"
 
   targets {
-    key    = "tag:Patching"
-    values = ["Yes"]
+    key    = "${var.patch_key}"
+    values = ["${var.patch_tag}"]
   }
 }
 
