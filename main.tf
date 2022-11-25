@@ -238,13 +238,15 @@ resource "aws_resourcegroups_group" "patch-resource-group" {
   resource_query {
     query = <<JSON
 {
-	"ResourceTypeFilters": [
-		"AWS::EC2::Instance"
-	],
-	"TagFilters": [{
-		"Key": "${var.patch_key}",
-		"Values": "${var.patch_tag}"
-	}]
+   "ResourceTypeFilters":[
+      "AWS::EC2::Instance"
+   ],
+   "TagFilters":[
+      {
+         "Key":"Patching",
+         "Values":"Yes"
+      }
+   ]
 }
 JSON
   }
