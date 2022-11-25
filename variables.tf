@@ -26,27 +26,26 @@ variable "force_destroy_bucket" {
 }
 variable "operating_system" {
   type        = string
-  description = "Operating system on the ec2 instance"
+  description = "Operating system on the ec2 instance, used by the approval rule only, and is not required for the automation script"
   default     = "CENTOS"
 }
 variable "approval_days" {
   type        = string
-  description = "Number of days before the package is approved"
+  description = "Number of days before the package is approved, used by the approval rule only, and is not required for the automation script"
   default     = "7"
 }
 variable "compliance_level" {
   type        = string
-  description = "Select the level of compliance"
-  default     = "HIGH"
+  description = "Select the level of compliance, used by the approval rule only, and is not required for the automation script. By default it's CRITICAL"
+  default     = "CRITICAL"
 }
 variable "patch_classification" {
   type        = list(string)
   description = "Operating system on the ec2 instance"
   default     = ["Security"]
 }
-
 variable "patch_schedule" {
   type        = string
-  description = "Crontab on when to run the automation script"
+  description = "Crontab on when to run the automation script. " # e.g. "cron(00 01 ? * MON *)"
   default     = "cron(00 08 ? * MON *)"
 }

@@ -177,7 +177,7 @@ resource "aws_iam_role_policy_attachment" "ssm-admin-automation" {
 resource "aws_ssm_maintenance_window" "ssm-maintenance-window" {
   name     = "${var.application_name}-maintenance-window"
   schedule = var.patch_schedule
-  duration = 4
+  duration = 4 # These could be made into variables if required, however 4 hours seems a long enough duration for patching.
   cutoff   = 3
 }
 
@@ -191,7 +191,7 @@ resource "aws_ssm_maintenance_window_target" "ssm-maintenance-window-target" {
 
   targets {
     key    = "tag:Patching"
-    values = ["yes"]
+    values = ["Yes"]
   }
 }
 
@@ -243,7 +243,7 @@ resource "aws_resourcegroups_group" "patch-resource-group" {
 	],
 	"TagFilters": [{
 		"Key": "Patching",
-		"Values": ["yes", "true", "YES", "Yes", "TRUE"]
+		"Values": ["yes", "true", "Yes", "True"]
 	}]
 }
 JSON
