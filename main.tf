@@ -244,7 +244,7 @@ resource "aws_resourcegroups_group" "patch-resource-group" {
    "TagFilters":[
       {
          "Key":"Patching",
-         "Values":"Yes"
+         "Values":["Yes"]
       }
    ]
 }
