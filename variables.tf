@@ -47,5 +47,5 @@ variable "patch_classification" {
 variable "patch_schedule" {
   type        = string
   description = "Crontab on when to run the automation script. " # e.g. "cron(00 01 ? * MON *)"
-  default     = "cron(00 08 ? * MON *)"
+  default     = "cron(00 22 ? * MON *)"
 }
