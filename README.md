@@ -86,7 +86,9 @@ If you're looking to raise an issue with this module, please create a new issue 
 | <a name="input_force_destroy_bucket"></a> [force\_destroy\_bucket](#input\_force\_destroy\_bucket) | A boolean that indicates all objects (including any locked objects) should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable. | `bool` | `false` | no |
 | <a name="input_operating_system"></a> [operating\_system](#input\_operating\_system) | Operating system on the ec2 instance, used by the approval rule only, and is not required for the automation script | `string` | `"CENTOS"` | no |
 | <a name="input_patch_classification"></a> [patch\_classification](#input\_patch\_classification) | Operating system on the ec2 instance | `list(string)` | <pre>[<br>  "Security"<br>]</pre> | no |
+| <a name="input_patch_key"></a> [patch\_key](#input\_patch\_key) | Defaults as tag:Patching, but can be customised if pre existing tags and values want to be used | `string` | `"tag:Patching"` | no |
 | <a name="input_patch_schedule"></a> [patch\_schedule](#input\_patch\_schedule) | Crontab on when to run the automation script. | `string` | `"cron(00 22 ? * MON *)"` | no |
+| <a name="input_patch_tag"></a> [patch\_tag](#input\_patch\_tag) | Defaults as yes, but can be customised if pre existing tags and values want to be used | `string` | `"Yes"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common tags to be used by all resources | `map(string)` | n/a | yes |
 | <a name="input_vpc_all"></a> [vpc\_all](#input\_vpc\_all) | The full name of the VPC (including environment) used to create resources | `string` | n/a | yes |
 
