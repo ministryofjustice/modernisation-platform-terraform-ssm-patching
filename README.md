@@ -4,6 +4,10 @@
 
 ## Usage
 
+To use this module, you must have instances with the SSM agent installed (Comes as default with many AMIS), as well as have a tag of "Patching: Yes"
+
+We're looking to add more functionality with tagging, so these requirements may change in further releases.
+
 ```hcl
 
 module "ssm-auto-patching" {
