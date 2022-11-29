@@ -7,3 +7,8 @@ output "maintenance-window-id" {
   description = ""
   value       = module.ssm-auto-patching.maintenance-window-id
 }
+
+output "maintenance-window-target-id" {
+  description = ""
+  value       = module.ssm-auto-patching.maintenance-window-target-id
+}

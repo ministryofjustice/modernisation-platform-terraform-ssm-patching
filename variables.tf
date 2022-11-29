@@ -10,10 +10,10 @@ variable "application_name" {
   type        = string
   description = "Name of application"
 }
-variable "vpc_all" {
-  type        = string
-  description = "The full name of the VPC (including environment) used to create resources"
-}
+#variable "vpc_all" {
+#  type        = string
+#  description = "The full name of the VPC (including environment) used to create resources"
+#}
 variable "existing_bucket_name" {
   type        = string
   default     = ""

@@ -20,7 +20,10 @@ func TestModule(t *testing.T) {
 
 	maintenanceWindowId := terraform.Output(t, terraformOptions, "maintenance-window-id")
 	patchResourceGroupArn := terraform.Output(t, terraformOptions, "patch-resource-group-arn")
+	maintenanceWindowTargetId := terraform.Output(t, terraformOptions, "maintenance-window-target-id")
 
-	assert.Regexp(t, regexp.MustCompile(`^*`), maintenanceWindowId)
-	assert.Regexp(t, regexp.MustCompile(`^*`), patchResourceGroupArn)
+	assert.Regexp(t, regexp.MustCompile(`^mw-*`), maintenanceWindowId)
+	assert.Regexp(t, regexp.MustCompile(`^arn:aws:resource-groups:*`), patchResourceGroupArn)
+	assert.Regexp(t, regexp.MustCompile(`^*`), maintenanceWindowTargetId)
+
 }
