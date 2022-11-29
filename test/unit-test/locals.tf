@@ -35,4 +35,19 @@ locals {
   is_live       = [substr(terraform.workspace, length(local.application_name), length(terraform.workspace)) == "-production" || substr(terraform.workspace, length(local.application_name), length(terraform.workspace)) == "-preproduction" ? "live" : "non-live"]
   provider_name = "core-vpc-${local.environment}"
 
+#  account_number = ""
+#  tags           = ""
+#  application_name = ""
+#  vpc_all          = ""
+#  existing_bucket_name = ""
+#  force_destroy_bucket = ""
+#  operating_system     = ""
+#  approval_days        = "7"
+#  compliance_level     = ""
+#  patch_classification = ""
+#  patch_schedule       = ""
+#  patch_key            = ""
+#  patch_tag            = ""
 }
+
+

@@ -16,12 +16,11 @@ func TestModule(t *testing.T) {
 
 	defer terraform.Destroy(t, terraformOptions)
 
-	terraform.Init(t, terraformOptions)
-	terraform.WorkspaceSelectOrNew(t, terraformOptions, "testing-test")
+	terraform.InitAndApply(t, terraformOptions)
 
-	terraform.Apply(t, terraformOptions)
+	maintenanceWindowId := terraform.Output(t, terraformOptions, "maintenance-window-id")
+	patchResourceGroupArn := terraform.Output(t, terraformOptions, "patch-resource-group-arn")
 
-	exampleName := terraform.Output(t, terraformOptions, "example_name")
-
-	assert.Regexp(t, regexp.MustCompile(`^example-name*`), exampleName)
+	assert.Regexp(t, regexp.MustCompile(`^*`), maintenanceWindowId)
+	assert.Regexp(t, regexp.MustCompile(`^*`), patchResourceGroupArn)
 }
