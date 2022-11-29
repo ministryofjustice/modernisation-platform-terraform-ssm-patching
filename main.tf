@@ -185,7 +185,7 @@ resource "aws_ssm_maintenance_window_target" "ssm-maintenance-window-target" {
 
   targets {
     key    = "tag:${var.patch_key}"
-    values = ["${var.patch_tag}"]
+    values = [var.patch_tag]
   }
 }
 
