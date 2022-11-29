@@ -1,9 +1,3 @@
-#data "aws_vpc" "shared" {
-#  tags = {
-#    "Name" = var.vpc_all
-#  }
-#}
-
 # Terraform module which creates S3 Bucket resources for Load Balancer Access Logs on AWS.
 
 module "s3-bucket" {
