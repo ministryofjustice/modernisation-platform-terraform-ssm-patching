@@ -1,9 +1,3 @@
-data "aws_vpc" "shared" {
-  tags = {
-    "Name" = var.vpc_all
-  }
-}
-
 # Terraform module which creates S3 Bucket resources for Load Balancer Access Logs on AWS.
 
 module "s3-bucket" {
@@ -191,7 +185,7 @@ resource "aws_ssm_maintenance_window_target" "ssm-maintenance-window-target" {
 
   targets {
     key    = "tag:${var.patch_key}"
-    values = ["${var.patch_tag}"]
+    values = [var.patch_tag]
   }
 }
 

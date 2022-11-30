@@ -16,12 +16,15 @@ func TestModule(t *testing.T) {
 
 	defer terraform.Destroy(t, terraformOptions)
 
-	terraform.Init(t, terraformOptions)
-	terraform.WorkspaceSelectOrNew(t, terraformOptions, "testing-test")
+	terraform.InitAndApply(t, terraformOptions)
 
-	terraform.Apply(t, terraformOptions)
+	maintenanceWindowId := terraform.Output(t, terraformOptions, "maintenance-window-id")
+	patchResourceGroupArn := terraform.Output(t, terraformOptions, "patch-resource-group-arn")
+	maintenanceWindowTargetId := terraform.Output(t, terraformOptions, "maintenance-window-target-id")
+    iamPolicyArn := terraform.Output(t, terraformOptions, "iam-policy-arn")
 
-	exampleName := terraform.Output(t, terraformOptions, "example_name")
-
-	assert.Regexp(t, regexp.MustCompile(`^example-name*`), exampleName)
+	assert.Regexp(t, regexp.MustCompile(`^mw-*`), maintenanceWindowId)
+	assert.Regexp(t, regexp.MustCompile(`^arn:aws:resource-groups:*`), patchResourceGroupArn)
+	assert.Regexp(t, regexp.MustCompile(`^*`), maintenanceWindowTargetId)
+    assert.Regexp(t, regexp.MustCompile(`^arn:aws:iam:*`), iamPolicyArn)
 }

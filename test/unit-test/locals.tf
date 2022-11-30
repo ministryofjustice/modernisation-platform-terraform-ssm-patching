@@ -36,3 +36,5 @@ locals {
   provider_name = "core-vpc-${local.environment}"
 
 }
+
+
