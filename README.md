@@ -94,7 +94,8 @@ If you're looking to raise an issue with this module, please create a new issue 
 
 | Name | Description |
 |------|-------------|
-| <a name="output_maintenance-window-id"></a> [maintenance-window-id](#output\_maintenance-window-id) | n/a |
-| <a name="output_maintenance-window-target-id"></a> [maintenance-window-target-id](#output\_maintenance-window-target-id) | n/a |
-| <a name="output_patch-resource-group-arn"></a> [patch-resource-group-arn](#output\_patch-resource-group-arn) | patch-resource-group |
+| <a name="output_iam-policy-arn"></a> [iam-policy-arn](#output\_iam-policy-arn) | The policy arn for the IAM policy used by the automation script |
+| <a name="output_maintenance-window-id"></a> [maintenance-window-id](#output\_maintenance-window-id) | The maintenance window id |
+| <a name="output_maintenance-window-target-id"></a> [maintenance-window-target-id](#output\_maintenance-window-target-id) | The target id for the maintenance window |
+| <a name="output_patch-resource-group-arn"></a> [patch-resource-group-arn](#output\_patch-resource-group-arn) | The resource group arn for patching |
 <!-- END_TF_DOCS -->
