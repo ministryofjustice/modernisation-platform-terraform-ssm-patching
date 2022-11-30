@@ -19,7 +19,6 @@ module "ssm-auto-patching" {
 
   account_number             = local.environment_management.account_ids[terraform.workspace]
   application_name           = local.application_name
-  vpc_all                    = "garden-sandbox"
   tags = merge(
     local.tags,
     {
