@@ -6,7 +6,7 @@ module "ssm-auto-patching" {
 
   account_number   = local.environment_management.account_ids["testing-test"]
   application_name = local.application_name
-  patch_schedule = "cron(30 17 ? * MON *)"
+  patch_schedule   = "cron(30 17 ? * MON *)"
   tags = merge(
     local.tags,
     {
