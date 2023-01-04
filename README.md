@@ -67,7 +67,8 @@ If you're looking to raise an issue with this module, please create a new issue 
 | [aws_ssm_maintenance_window.ssm-maintenance-window](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_maintenance_window) | resource |
 | [aws_ssm_maintenance_window_target.ssm-maintenance-window-target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_maintenance_window_target) | resource |
 | [aws_ssm_maintenance_window_task.ssm-maintenance-window-automation-task](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_maintenance_window_task) | resource |
-| [aws_ssm_patch_baseline.patch-baseline-poc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_patch_baseline) | resource |
+| [aws_ssm_patch_baseline.oracle-database-baseline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_patch_baseline) | resource |
+| [aws_ssm_patch_baseline.oracle-database-patch-baseline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_patch_baseline) | resource |
 | [aws_elb_service_account.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/elb_service_account) | data source |
 | [aws_iam_policy_document.bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ssm-admin-policy-doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -87,6 +88,7 @@ If you're looking to raise an issue with this module, please create a new issue 
 | <a name="input_patch_key"></a> [patch\_key](#input\_patch\_key) | Defaults as tag:Patching, but can be customised if pre existing tags and values want to be used | `string` | `"Patching"` | no |
 | <a name="input_patch_schedule"></a> [patch\_schedule](#input\_patch\_schedule) | Crontab on when to run the automation script. | `string` | `"cron(00 22 ? * MON *)"` | no |
 | <a name="input_patch_tag"></a> [patch\_tag](#input\_patch\_tag) | Defaults as yes, but can be customised if pre existing tags and values want to be used | `string` | `"Yes"` | no |
+| <a name="input_rejected_patches"></a> [rejected\_patches](#input\_rejected\_patches) | List of patches to be rejected | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common tags to be used by all resources | `map(string)` | n/a | yes |
 
 ## Outputs

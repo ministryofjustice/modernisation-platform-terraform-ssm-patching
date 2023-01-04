@@ -55,3 +55,8 @@ variable "patch_tag" {
   description = "Defaults as yes, but can be customised if pre existing tags and values want to be used"
   default     = "Yes"
 }
+variable "rejected_patches" {
+  type        = list(string)
+  description = "List of patches to be rejected"
+  default     = []
+}
