@@ -98,3 +98,9 @@ If you're looking to raise an issue with this module, please create a new issue 
 | <a name="output_maintenance-window-target-id"></a> [maintenance-window-target-id](#output\_maintenance-window-target-id) | The target id for the maintenance window |
 | <a name="output_patch-resource-group-arn"></a> [patch-resource-group-arn](#output\_patch-resource-group-arn) | The resource group arn for patching |
 <!-- END_TF_DOCS -->
+
+## Issues
+
+- Patching offered in this module works, with cross account patching also working, however I have included cloudformation templates in the repo as with cross account patching, until all of it has been tested some IAM permissions errors are raised.
+- Currently in the single account patching you can select the patch_classification, going forward I will add the ability to select single patches, similarly to cross-account patching.
+- Currently in the single account patching via patch manager you have to select the operating system, if multiple operating systems are used, then multiple patch manager jobs need to be run. In the scheduled job via an automation script, this is not required, and it will run against all offered operating systems automatically. I would like to offer this via patch manager in the future.

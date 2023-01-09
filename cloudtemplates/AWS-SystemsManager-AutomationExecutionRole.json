@@ -1,0 +1,80 @@
+{
+    "Parameters": {
+        "AdminAccountId": {
+            "Type": "String",
+            "Description": "AWS Account ID of the primary account (the account from which AWS Systems Manager Automation will be initiated).",
+            "MaxLength": 12,
+            "MinLength": 12
+        }
+    },
+    "Resources": {
+        "AWSSystemsManagerAutomationExecutionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": "AWS-SystemsManager-AutomationExecutionRole",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": {
+                                    "Fn::Sub": [
+                                        "arn:aws:iam::${AdminAccountId}:role/AWS-SystemsManager-AutomationAdministrationRole",
+                                        {
+                                            "AdminAccountId": {
+                                                "Ref": "AdminAccountId"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "Action": "sts:AssumeRole"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "ssm.amazonaws.com"
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AmazonSSMAutomationRole"
+                ],
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "ExecutionPolicy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "resource-groups:ListGroupResources",
+                                        "tag:GetResources",
+                                        "ec2:DescribeInstances"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "iam:PassRole"
+                                    ],
+                                    "Resource": {
+                                        "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/AWS-SystemsManager-AutomationExecutionRole"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
