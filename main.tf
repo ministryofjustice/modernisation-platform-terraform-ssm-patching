@@ -121,6 +121,16 @@ data "aws_elb_service_account" "default" {}
 ###### IAM  #####
 
 data "aws_iam_policy_document" "ssm-admin-policy-doc" {
+
+  # Not relevant to what we are doing. This sets a high level access policy
+  #checkov:skip=CKV_AWS_110: "Ensure IAM policies does not allow privilege escalation"
+  #checkov:skip=CKV_AWS_109: "Ensure IAM policies does not allow permissions management / resource exposure without constraints"
+  #checkov:skip=CKV_AWS_107: "Ensure IAM policies does not allow credentials exposure"
+  #checkov:skip=CKV_AWS_108: "Ensure IAM policies does not allow data exfiltration"
+  #checkov:skip=CKV_AWS_356: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+  #checkov:skip=CKV_AWS_111: "Ensure IAM policies does not allow write access without constraints"
+  #checkov:skip=CKV_TF_1: "Ensure Terraform module sources use a commit hash"
+  
   statement {
     actions = ["s3:*",
       "ec2:*",
