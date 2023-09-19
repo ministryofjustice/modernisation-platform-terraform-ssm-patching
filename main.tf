@@ -57,6 +57,8 @@ module "s3-bucket" {
 }
 
 data "aws_iam_policy_document" "bucket_policy" {
+  # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
+  #tfsec:ignore:aws-iam-no-policy-wildcards
   statement {
     effect = "Allow"
     actions = [
@@ -132,6 +134,9 @@ data "aws_iam_policy_document" "ssm-admin-policy-doc" {
   #checkov:skip=CKV_TF_1: "Ensure Terraform module sources use a commit hash"
 
   statement {
+
+    # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
+    #tfsec:ignore:aws-iam-no-policy-wildcards
     actions = ["s3:*",
       "ec2:*",
       "ssm:*",
@@ -140,6 +145,8 @@ data "aws_iam_policy_document" "ssm-admin-policy-doc" {
       "iam:*",
       "lambda:*"
     ]
+    # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
+    #tfsec:ignore:aws-iam-no-policy-wildcards
     resources = ["*"]
   }
 }
@@ -152,6 +159,9 @@ resource "aws_iam_policy" "ssm-patching-iam-policy" {
 }
 
 resource "aws_iam_role" "ssm-patching-iam-role" {
+  # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
+  #tfsec:ignore:aws-iam-no-policy-wildcards
+
   name = "ssm-patching-iam-role"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
