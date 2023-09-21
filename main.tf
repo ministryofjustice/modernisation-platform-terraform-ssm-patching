@@ -223,7 +223,7 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
 
   targets {
     key    = "WindowTargetIds"
-    values = aws_ssm_maintenance_window_target.ssm-maintenance-window-target.*.id
+    values = aws_ssm_maintenance_window_target.ssm-maintenance-window-target.[*].id
   }
 
   task_invocation_parameters {
