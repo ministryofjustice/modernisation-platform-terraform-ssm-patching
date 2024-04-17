@@ -268,22 +268,7 @@ JSON
 
 ###### Approval rule #####
 
-#resource "aws_ssm_patch_baseline" "patch-baseline-poc" {
-#  name             = "${var.application_name}-baseline"
-#  operating_system = var.operating_system
-#
-#  approval_rule {
-#    approve_after_days = var.approval_days
-#    compliance_level   = var.compliance_level
-#
-#    patch_filter {
-#      key    = "CLASSIFICATION"
-#      values = var.patch_classification
-#    }
-#  }
-#}
-
-resource "aws_ssm_patch_baseline" "oracle-database-baseline" {
+resource "aws_ssm_patch_baseline" "patch-baseline-poc" {
   name             = "${var.application_name}-baseline"
   operating_system = var.operating_system
 
@@ -296,6 +281,42 @@ resource "aws_ssm_patch_baseline" "oracle-database-baseline" {
       values = var.patch_classification
     }
   }
+}
+
+
+
+resource "aws_ssm_patch_group" "patchgroup" {
+  baseline_id = aws_ssm_patch_baseline.patch-baseline-poc.id
+  patch_group = "patch-group"
+}
+
+resource "aws_ssm_patch_policy" "example" {
+  name        = "example-patch-policy"
+  description = "A patch policy with default configuration"
+
+  patch_operation = "install"      # The options here should be either `scan` or `install`
+  patch_baseline  = aws_ssm_patch_baseline.patch-baseline-poc      # The options here should be `default` or `custom`. `custom` will require either a configuration block or separate resource
+  s3_bucket       = "${var.application_name}-ssm-patching-logs"  # S3 Bucket for logging patching operations
+  targets         = "current_account" # The options here should be `organization`, `custom`, or `current_account`. `custom` will require either a configuration block or separate resource
+
+  scan_schedule {
+    # `patch_operation` has options for recommended defaults or a custom scan schedule. This block should configure the custom scan schedule.
+    # The first option is to configure a daily schedule
+    daily_time = "10:00"
+    # The second option is to use a custom CRON expression
+    cron_expression = "cron(0 12 * * ? *)"
+    # There is also an option to wait to scan targets until first CRON interval.
+    wait = true
+  }
+
+  rate_control {
+    # Rate controls can be expressed as either number of nodes or percentage of nodes
+    concurrency     = 10
+    error_threshold = 10
+  }
+
+  add_iam_policies = true # The options here should be `true` or `false`
+
 }
 
 resource "aws_ssm_patch_baseline" "oracle-database-patch-baseline" {
