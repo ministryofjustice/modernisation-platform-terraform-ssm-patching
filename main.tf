@@ -347,5 +347,3 @@ resource "aws_ssm_patch_baseline" "oracle-database-patch-baseline" {
     }
   }
 }
-
-
