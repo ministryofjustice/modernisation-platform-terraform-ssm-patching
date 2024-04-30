@@ -352,7 +352,7 @@ resource "aws_ssm_patch_baseline" "oracle_linux_8" {
   name             = "oracle-linux-8"
   operating_system = "ORACLE_LINUX"
 
-approval_rule {
+  approval_rule {
     approve_after_days = 7
     compliance_level   = "CRITICAL"
 
