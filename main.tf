@@ -347,3 +347,31 @@ resource "aws_ssm_patch_baseline" "oracle-database-patch-baseline" {
     }
   }
 }
+
+resource "aws_ssm_patch_baseline" "oracle_linux_8" {
+  name             = "oracle-linux-8"
+  operating_system = "ORACLE_LINUX"
+
+approval_rule {
+    approve_after_days = 7
+    compliance_level   = "CRITICAL"
+
+    patch_filter {
+      key    = "PRODUCT"
+      values = ["OracleLinux"]
+    }
+
+    patch_filter {
+      key    = "CLASSIFICATION"
+      values = ["Security"]
+    }
+
+    patch_filter {
+      key    = "MSRC_SEVERITY"
+      values = ["Critical"]
+    }
+  }
+}
+
+
+
