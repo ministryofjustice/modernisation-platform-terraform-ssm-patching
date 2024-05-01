@@ -30,12 +30,15 @@ go mod download
 go test -v
 ```
 
+Upon successful run, you should see an output similar to the below
+
+```
 TestModule 2024-05-01T09:41:59+01:00 logger.go:66: Destroy complete! Resources: 17 destroyed.
 TestModule 2024-05-01T09:41:59+01:00 logger.go:66:
 --- PASS: TestModule (79.25s)
 PASS
 ok  	github.com/ministryofjustice/modernisation-platform-terraform-ssm-patching	  79.561s
-
+```
 ## References
 
 1. https://terratest.gruntwork.io/docs/getting-started/quick-start/
