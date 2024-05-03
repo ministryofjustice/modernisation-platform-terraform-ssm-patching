@@ -3,7 +3,7 @@ terraform {
     aws = {
       version = "~> 5.0"
       source  = "hashicorp/aws"
-      configuration_aliases = [aws.bucket-replication, aws.core-vpc, aws.core-network-services]
+      configuration_aliases = [aws.bucket-replication]
     }
     http = {
       source = "hashicorp/http"
