@@ -63,6 +63,6 @@ variable "rejected_patches" {
 
 variable "suffix" {
   type        = string
-  description = "Suffix to label resources"
+  description = "When creating multiple patch schedules per environment, a suffix can be used to differentiate resources "
   default     = null
 }
