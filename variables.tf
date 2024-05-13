@@ -60,3 +60,9 @@ variable "rejected_patches" {
   description = "List of patches to be rejected"
   default     = []
 }
+
+variable "suffix" {
+  type        = string
+  description = "Suffix to label resources"
+  default     = null
+}
