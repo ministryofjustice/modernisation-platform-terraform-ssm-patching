@@ -60,3 +60,9 @@ variable "rejected_patches" {
   description = "List of patches to be rejected"
   default     = []
 }
+
+variable "suffix" {
+  type        = string
+  description = "When creating multiple patch schedules per environment, a suffix can be used to differentiate resources"
+  default     = ""
+}
