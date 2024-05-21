@@ -363,7 +363,7 @@ resource "aws_ssm_patch_baseline" "oracle_linux_8_baseline" {
   approval_rule {
     patch_filter {
       key    = "CLASSIFICATION"
-      values = ["CriticalUpdates", "SecurityUpdates", "Updates"]
+      values = ["Security", "Bugfix"]
     }
     approve_after_days = 7
     compliance_level   = "HIGH"
