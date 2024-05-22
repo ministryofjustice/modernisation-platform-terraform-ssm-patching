@@ -17,3 +17,11 @@ output "iam-policy-arn" {
   description = "The policy arn for the IAM policy used by the automation script"
   value       = try(aws_iam_role_policy_attachment.ssm-admin-automation.policy_arn, "")
 }
+
+output "baselines" {
+  description = "The baselines for the patching"
+  value       = {
+    "oracle-linux-8-patch-baseline" = aws_ssm_patch_baseline.oracle-linux-8-patch-baseline
+    "oracle-database-patch-baseline" = aws_ssm_patch_baseline.oracle-database-patch-baseline
+  }  
+}
