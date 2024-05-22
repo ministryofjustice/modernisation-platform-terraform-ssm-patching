@@ -20,8 +20,8 @@ output "iam-policy-arn" {
 
 output "baselines" {
   description = "The baselines for the patching"
-  value       = {
-    "oracle-linux-8-patch-baseline" = aws_ssm_patch_baseline.oracle_linux_8_baseline
+  value = {
+    "oracle-linux-8-patch-baseline"  = aws_ssm_patch_baseline.oracle_linux_8_baseline
     "oracle-database-patch-baseline" = aws_ssm_patch_baseline.oracle-database-patch-baseline
-  }  
+  }
 }
