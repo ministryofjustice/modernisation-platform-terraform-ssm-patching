@@ -97,6 +97,7 @@ If you're looking to raise an issue with this module, please create a new issue 
 
 | Name | Description |
 |------|-------------|
+| <a name="output_baselines"></a> [baselines](#output\_baselines) | The baselines for the patching |
 | <a name="output_iam-policy-arn"></a> [iam-policy-arn](#output\_iam-policy-arn) | The policy arn for the IAM policy used by the automation script |
 | <a name="output_maintenance-window-id"></a> [maintenance-window-id](#output\_maintenance-window-id) | The maintenance window id |
 | <a name="output_maintenance-window-target-id"></a> [maintenance-window-target-id](#output\_maintenance-window-target-id) | The target id for the maintenance window |
