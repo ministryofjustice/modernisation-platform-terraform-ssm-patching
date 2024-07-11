@@ -292,6 +292,7 @@ resource "aws_ssm_patch_baseline" ssm-patch-baseline {
 
   approval_rule {
     approve_after_days = var.approval_days
+    compliance_level   = var.compliance_level
 
     patch_filter {
       key    = "PRODUCT"
