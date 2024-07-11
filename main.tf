@@ -315,68 +315,68 @@ resource "aws_ssm_default_patch_baseline" "ssm-default-patch-baseline" {
   baseline_id      = aws_ssm_patch_baseline.ssm-patch-baseline.id
   operating_system = var.operating_system
 }
-
-resource "aws_ssm_patch_baseline" "oracle-database-baseline" {
-  name             = "${var.application_name}-baseline${var.suffix}"
-  operating_system = var.operating_system
-
-  approval_rule {
-    approve_after_days = var.approval_days
-    compliance_level   = var.compliance_level
-
-    patch_filter {
-      key    = "CLASSIFICATION"
-      values = var.patch_classification
-    }
-  }
-}
-
-resource "aws_ssm_patch_baseline" "oracle-database-patch-baseline" {
-  name             = "oracle-database-patch-baseline${var.suffix}"
-  description      = "Patch Baseline Description"
-  rejected_patches = var.rejected_patches
-
-  global_filter {
-    key    = "PRODUCT"
-    values = ["WindowsServer2008"]
-  }
-
-  global_filter {
-    key    = "CLASSIFICATION"
-    values = ["ServicePacks"]
-  }
-
-  global_filter {
-    key    = "MSRC_SEVERITY"
-    values = ["Low"]
-  }
-
-  approval_rule {
-    approve_after_days = 7
-    compliance_level   = "HIGH"
-
-    patch_filter {
-      key    = "PRODUCT"
-      values = ["WindowsServer2016"]
-    }
-
-    patch_filter {
-      key    = "CLASSIFICATION"
-      values = ["CriticalUpdates", "SecurityUpdates", "Updates"]
-    }
-
-    patch_filter {
-      key    = "MSRC_SEVERITY"
-      values = ["Critical", "Important", "Moderate"]
-    }
-  }
-
-  approval_rule {
-    approve_after_days = 7
-
-    patch_filter {
-      key    = "PRODUCT"
-      values = ["WindowsServer2012"]
-    }
-  }
-}
+#
+# resource "aws_ssm_patch_baseline" "oracle-database-baseline" {
+#   name             = "${var.application_name}-baseline${var.suffix}"
+#   operating_system = var.operating_system
+#
+#   approval_rule {
+#     approve_after_days = var.approval_days
+#     compliance_level   = var.compliance_level
+#
+#     patch_filter {
+#       key    = "CLASSIFICATION"
+#       values = var.patch_classification
+#     }
+#   }
+# }
+#
+# resource "aws_ssm_patch_baseline" "oracle-database-patch-baseline" {
+#   name             = "oracle-database-patch-baseline${var.suffix}"
+#   description      = "Patch Baseline Description"
+#   rejected_patches = var.rejected_patches
+#
+#   global_filter {
+#     key    = "PRODUCT"
+#     values = ["WindowsServer2008"]
+#   }
+#
+#   global_filter {
+#     key    = "CLASSIFICATION"
+#     values = ["ServicePacks"]
+#   }
+#
+#   global_filter {
+#     key    = "MSRC_SEVERITY"
+#     values = ["Low"]
+#   }
+#
+#   approval_rule {
+#     approve_after_days = 7
+#     compliance_level   = "HIGH"
+#
+#     patch_filter {
+#       key    = "PRODUCT"
+#       values = ["WindowsServer2016"]
+#     }
+#
+#     patch_filter {
+#       key    = "CLASSIFICATION"
+#       values = ["CriticalUpdates", "SecurityUpdates", "Updates"]
+#     }
+#
+#     patch_filter {
+#       key    = "MSRC_SEVERITY"
+#       values = ["Critical", "Important", "Moderate"]
+#     }
+#   }
+#
+#   approval_rule {
+#     approve_after_days = 7
+#
+#     patch_filter {
+#       key    = "PRODUCT"
+#       values = ["WindowsServer2012"]
+#     }
+#   }
+# }
