@@ -236,7 +236,7 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
       }
       parameter {
         name   = "ReportS3Bucket"
-        values = ["${var.application_name}-ssm-patching-logs"]
+        values = ["${var.application_name}-ssm${var.suffix}"]
       }
     }
   }
@@ -282,6 +282,38 @@ JSON
 #    }
 #  }
 #}
+
+
+resource "aws_ssm_patch_baseline" ssm-patch-baseline {
+  name              = "${var.application_name}-baseline${var.suffix}"
+  description       = "${var.application_name}-baseline${var.suffix}"
+  operating_system = var.operating_system
+  rejected_patches = var.rejected_patches
+
+  approval_rule {
+    approve_after_days = var.approval_days
+
+    patch_filter {
+      key    = "PRODUCT"
+      values = var.product
+    }
+
+    patch_filter {
+      key    = "CLASSIFICATION"
+      values = var.patch_classification
+    }
+
+    patch_filter {
+      key    = var.operating_system == "WINDOWS" ? "MSRC_SEVERITY" : "SEVERITY"
+      values = var.severity #["Critical", "Important"]
+    }
+  }
+}
+
+resource "aws_ssm_default_patch_baseline" "ssm-default-patch-baseline" {
+  baseline_id      = aws_ssm_patch_baseline.ssm-patch-baseline.id
+  operating_system = var.operating_system
+}
 
 resource "aws_ssm_patch_baseline" "oracle-database-baseline" {
   name             = "${var.application_name}-baseline${var.suffix}"

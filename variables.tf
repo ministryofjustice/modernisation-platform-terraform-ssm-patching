@@ -37,8 +37,18 @@ variable "compliance_level" {
 }
 variable "patch_classification" {
   type        = list(string)
-  description = "Operating system on the ec2 instance"
-  default     = ["Security"]
+  description = "Classification of the patch"
+  default     = ["*"]
+}
+variable "severity" {
+  type        = list(string)
+  description = "Severity of the patch"
+  default     = ["*"]
+}
+variable "product" {
+  type        = list(string)
+  description = "The specific product the patch is applicable for"
+  default     = ["*"]
 }
 variable "patch_schedule" {
   type        = string
@@ -60,7 +70,6 @@ variable "rejected_patches" {
   description = "List of patches to be rejected"
   default     = []
 }
-
 variable "suffix" {
   type        = string
   description = "When creating multiple patch schedules per environment, a suffix can be used to differentiate resources"
