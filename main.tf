@@ -213,6 +213,7 @@ resource "aws_ssm_maintenance_window_target" "ssm-maintenance-window-target" {
 
 resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-task" {
   name             = "${var.application_name}-automation-patching-task${var.suffix}"
+  description      = "${var.application_name}-automation-patching-task${var.suffix}"
   max_concurrency  = 20
   max_errors       = 10
   priority         = 1
