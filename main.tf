@@ -236,7 +236,8 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
       }
       parameter {
         name   = "ReportS3Bucket"
-        values = ["${var.application_name}-ssm${var.suffix}"]
+#         values = ["${var.application_name}-ssm${var.suffix}"]
+        values = ["${module.s3-bucket.bucket.id}"]
       }
     }
   }
