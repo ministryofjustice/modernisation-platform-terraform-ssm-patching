@@ -237,7 +237,6 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
       }
       parameter {
         name   = "ReportS3Bucket"
-#         values = ["${var.application_name}-ssm${var.suffix}"]
         values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket[0].bucket.id}"]
       }
     }
