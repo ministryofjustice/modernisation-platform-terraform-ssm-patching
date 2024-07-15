@@ -307,7 +307,7 @@ resource "aws_ssm_patch_baseline" "ssm-patch-baseline" {
 
     patch_filter {
       key    = var.operating_system == "WINDOWS" ? "MSRC_SEVERITY" : "SEVERITY"
-      values = var.severity #
+      values = var.severity
     }
   }
 }
