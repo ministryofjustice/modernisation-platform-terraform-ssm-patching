@@ -37,8 +37,18 @@ variable "compliance_level" {
 }
 variable "patch_classification" {
   type        = list(string)
-  description = "Operating system on the ec2 instance"
-  default     = ["Security"]
+  description = "Windows Options=(CriticalUpdates,SecurityUpdates,DefinitionUpdates,Drivers,FeaturePacks,ServicePacks,Tools,UpdateRollups,Updates,Upgrades), Linux Options=(Security,Bugfix,Enhancement,Recommended,Newpackage)"
+  default     = ["*"]
+}
+variable "severity" {
+  type        = list(string)
+  description = "Severity of the patch e.g. Critical, Important, Medium, Low"
+  default     = ["*"]
+}
+variable "product" {
+  type        = list(string)
+  description = "The specific product the patch is applicable for e.g. RedhatEnterpriseLinux8.5, WindowsServer2022"
+  default     = ["*"]
 }
 variable "patch_schedule" {
   type        = string
@@ -60,7 +70,6 @@ variable "rejected_patches" {
   description = "List of patches to be rejected"
   default     = []
 }
-
 variable "suffix" {
   type        = string
   description = "When creating multiple patch schedules per environment, a suffix can be used to differentiate resources"
