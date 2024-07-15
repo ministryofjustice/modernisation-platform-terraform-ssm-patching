@@ -70,6 +70,7 @@ If you're looking to raise an issue with this module, please create a new issue 
 | [aws_ssm_maintenance_window_task.ssm-maintenance-window-automation-task](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_maintenance_window_task) | resource |
 | [aws_ssm_patch_baseline.oracle-database-baseline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_patch_baseline) | resource |
 | [aws_ssm_patch_baseline.oracle-database-patch-baseline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_patch_baseline) | resource |
+| [aws_ssm_patch_baseline.oracle_linux_8_baseline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_patch_baseline) | resource |
 | [aws_elb_service_account.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/elb_service_account) | data source |
 | [aws_iam_policy_document.bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ssm-admin-policy-doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -97,6 +98,7 @@ If you're looking to raise an issue with this module, please create a new issue 
 
 | Name | Description |
 |------|-------------|
+| <a name="output_baselines"></a> [baselines](#output\_baselines) | The baselines for the patching |
 | <a name="output_iam-policy-arn"></a> [iam-policy-arn](#output\_iam-policy-arn) | The policy arn for the IAM policy used by the automation script |
 | <a name="output_maintenance-window-id"></a> [maintenance-window-id](#output\_maintenance-window-id) | The maintenance window id |
 | <a name="output_maintenance-window-target-id"></a> [maintenance-window-target-id](#output\_maintenance-window-target-id) | The target id for the maintenance window |
