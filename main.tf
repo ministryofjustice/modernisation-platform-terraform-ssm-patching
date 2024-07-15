@@ -285,9 +285,9 @@ JSON
 #}
 
 
-resource "aws_ssm_patch_baseline" ssm-patch-baseline {
-  name              = "${var.application_name}-baseline${var.suffix}"
-  description       = "${var.application_name}-baseline${var.suffix}"
+resource "aws_ssm_patch_baseline" "ssm-patch-baseline" {
+  name             = "${var.application_name}-baseline${var.suffix}"
+  description      = "${var.application_name}-baseline${var.suffix}"
   operating_system = var.operating_system
   rejected_patches = var.rejected_patches
 
