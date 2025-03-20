@@ -1,6 +1,6 @@
 module "s3-bucket" {
   count  = var.existing_bucket_name == "" ? 1 : 0
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=852a40b0dd18aaef0d7c5565d93cc8997aad79636" # v8.2.0
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=52a40b0dd18aaef0d7c5565d93cc8997aad79636" # v8.2.0
 
   providers = {
     aws.bucket-replication = aws.bucket-replication
