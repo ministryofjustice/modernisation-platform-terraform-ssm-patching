@@ -1,6 +1,10 @@
+locals {
+  create_bucket = var.use_existing_bucket == false ? { "reports" = true } : {}
+}
+
 module "s3-bucket" {
-  count  = var.existing_bucket_name == "" ? 1 : 0
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=52a40b0dd18aaef0d7c5565d93cc8997aad79636" # v8.2.0
+  for_each = local.create_bucket
+  source   = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=52a40b0dd18aaef0d7c5565d93cc8997aad79636" # v8.2.0
 
   providers = {
     aws.bucket-replication = aws.bucket-replication
@@ -63,7 +67,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       "s3:PutObject"
     ]
 
-    resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket[0].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
+    resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket["reports"].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
     principals {
       type        = "AWS"
       identifiers = [data.aws_elb_service_account.default.arn]
@@ -81,7 +85,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       "s3:PutObject"
     ]
 
-    resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket[0].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
+    resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket["reports"].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
 
     condition {
       test     = "StringEquals"
@@ -106,7 +110,7 @@ data "aws_iam_policy_document" "bucket_policy" {
     ]
 
     resources = [
-      var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : module.s3-bucket[0].bucket.arn
+      var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : module.s3-bucket["reports"].bucket.arn
     ]
   }
 }
@@ -223,7 +227,7 @@ resource "aws_ssm_maintenance_window_task" "this" {
       }
       parameter {
         name   = "ReportS3Bucket"
-        values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket[0].bucket.id}"]
+        values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket["reports"].bucket.id}"]
       }
     }
   }
@@ -286,7 +290,7 @@ resource "aws_ssm_default_patch_baseline" "patch_manager" {
 # Definition updates (Defender anti-virus etc) do not require a reboot and should be applied daily.
 
 resource "aws_ssm_maintenance_window" "definition_updates" {
-  count = (var.operating_system == "WINDOWS" && var.daily_definition_update == true) ? 1 : 0
+  count    = (var.operating_system == "WINDOWS" && var.daily_definition_update == true) ? 1 : 0
   name     = format("%s-%s-%s", var.application_name, "maintenance-window", "definition-updates")
   schedule = "cron(0 8 * * *)" # Every day @8am, (Required) The schedule of the Maintenance Window in the form of a cron expression.
   duration = 2                 # (Required) This will only take a few mins max, but is counted in hours and needs to be +1 more than the cutoff.
@@ -294,7 +298,7 @@ resource "aws_ssm_maintenance_window" "definition_updates" {
 }
 
 resource "aws_ssm_maintenance_window_target" "definition_updates" {
-  count = (var.operating_system == "WINDOWS" && var.daily_definition_update == true) ? 1 : 0
+  count         = (var.operating_system == "WINDOWS" && var.daily_definition_update == true) ? 1 : 0
   window_id     = aws_ssm_maintenance_window.definition_updates[0].id
   name          = format("%s-%s", "maintenance-window-target", "definition-updates")
   description   = "Targets of the Windows definition updates maintenance window by tag key (any value)."
@@ -302,12 +306,12 @@ resource "aws_ssm_maintenance_window_target" "definition_updates" {
 
   targets {
     key    = "tag:${var.patch_tag_key}"
-    values =  keys(var.patch_schedules)
+    values = keys(var.patch_schedules)
   }
 }
 
 resource "aws_ssm_maintenance_window_task" "definition_updates" {
-  count = (var.operating_system == "WINDOWS" && var.daily_definition_update == true) ? 1 : 0
+  count            = (var.operating_system == "WINDOWS" && var.daily_definition_update == true) ? 1 : 0
   name             = format("%s-%s-%s", var.application_name, "patch-manager-task", "definition-updates")
   description      = "Use AWS standard documents to patch the targeted instances in a controlled manner."
   max_concurrency  = 10
@@ -333,7 +337,7 @@ resource "aws_ssm_maintenance_window_task" "definition_updates" {
       }
       parameter {
         name   = "ReportS3Bucket"
-        values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket[0].bucket.id}"]
+        values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket["reports"].bucket.id}"]
       }
       parameter {
         name   = "Operation"

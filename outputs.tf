@@ -20,5 +20,5 @@ output "iam_policy_arn" {
 
 output "s3_report_bucket_name" {
   description = "The name of the S3 bucket created by the module for reports"
-  value       = try(module.s3-bucket[0].bucket.id, "")
+  value       = try(module.s3-bucket["reports"].bucket.id, "")
 }

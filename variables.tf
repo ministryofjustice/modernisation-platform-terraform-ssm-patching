@@ -13,7 +13,12 @@ variable "application_name" {
 variable "existing_bucket_name" {
   type        = string
   default     = ""
-  description = "Name of an existing S3 bucket. If not provided one will be created, used for reports."
+  description = "Name of an existing S3 bucket for reports. Required if use_existing_bucket is set to true"
+}
+variable "use_existing_bucket" {
+  type        = bool
+  default     = false
+  description = "Boolean to determine if an S3 bucket should be built for reports."
 }
 variable "force_destroy_bucket" {
   type        = bool
