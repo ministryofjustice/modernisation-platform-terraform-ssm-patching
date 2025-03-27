@@ -105,8 +105,8 @@ If you're looking to raise an issue with this module, please create a new issue 
 | <a name="output_patch-resource-group-arn"></a> [patch-resource-group-arn](#output\_patch-resource-group-arn) | The resource group arn for patching |
 <!-- END_TF_DOCS -->
 
-[Standards Link]: https://github-community.cloud-platform.service.justice.gov.uk/repository-standards/modernisation-platform-terraform-ssm-patching "Repo standards badge."
-[Standards Icon]: https://github-community.cloud-platform.service.justice.gov.uk/repository-standards/api/modernisation-platform-terraform-ssm-patching/badge
+[Standards Link]: https://github-community.service.justice.gov.uk/repository-standards/modernisation-platform-terraform-ssm-patching "Repo standards badge."
+[Standards Icon]: https://github-community.service.justice.gov.uk/repository-standards/api/modernisation-platform-terraform-ssm-patching/badge
 [Format Code Icon]: https://img.shields.io/github/actions/workflow/status/ministryofjustice/modernisation-platform-terraform-ssm-patching/format-code.yml?labelColor=231f20&style=for-the-badge&label=Formate%20Code
 [Format Code Link]: https://github.com/ministryofjustice/modernisation-platform-terraform-ssm-patching/actions/workflows/format-code.yml
 [Scorecards Icon]: https://img.shields.io/github/actions/workflow/status/ministryofjustice/modernisation-platform-terraform-ssm-patching/scorecards.yml?branch=main&labelColor=231f20&style=for-the-badge&label=Scorecards
