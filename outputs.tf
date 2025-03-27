@@ -5,12 +5,12 @@ output "patch_resource_group_arns" {
 
 output "maintenance_window_ids" {
   description = "The maintenance window id(s)"
-  value       = try(aws_ssm_maintenance_window.this[*].id, "")
+  value       = try(aws_ssm_maintenance_window.patch_manager[*].id, "")
 }
 
 output "maintenance_window_target_ids" {
   description = "The target id(s) for the maintenance window"
-  value       = try(aws_ssm_maintenance_window_target.this[*].id, "")
+  value       = try(aws_ssm_maintenance_window_target.patch_manager[*].id, "")
 }
 
 output "iam_policy_arn" {
@@ -18,7 +18,7 @@ output "iam_policy_arn" {
   value       = try(aws_iam_role_policy_attachment.patch_manager.policy_arn, "")
 }
 
-output "s3_report_bucket_name" {
-  description = "The name of the S3 bucket created by the module for reports"
-  value       = try(module.s3-bucket["reports"].bucket.id, "")
-}
+# output "s3_report_bucket_name" {
+#   description = "The name of the S3 bucket created by the module for reports"
+#   value       = try(module.s3-bucket["reports"].bucket.id, "")
+# }
