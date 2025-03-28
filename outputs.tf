@@ -17,8 +17,3 @@ output "iam_policy_arn" {
   description = "The policy arn for the IAM policy used by the automation script"
   value       = try(aws_iam_role_policy_attachment.patch_manager.policy_arn, "")
 }
-
-# output "s3_report_bucket_name" {
-#   description = "The name of the S3 bucket created by the module for reports"
-#   value       = try(module.s3-bucket["reports"].bucket.id, "")
-# }

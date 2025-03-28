@@ -74,5 +74,5 @@ variable "maintenance_window_cutoff" {
 variable "daily_definition_update" {
   type        = bool
   description = "Create an additional schedule for Windows instances to update definitions every day (no reboot required), Uses tag:os-type = Windows as targets."
-  default     = true
+  default     = false
 }

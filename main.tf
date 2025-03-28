@@ -1,121 +1,3 @@
-# locals {
-#   create_bucket = var.use_existing_bucket == false ? { "reports" = true } : {}
-# }
-
-# module "s3-bucket" {
-#   for_each = local.create_bucket
-#   source   = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=52a40b0dd18aaef0d7c5565d93cc8997aad79636" # v8.2.0
-
-#   providers = {
-#     aws.bucket-replication = aws.bucket-replication
-#   }
-#   bucket_prefix       = "${var.application_name}-patch-manager"
-#   bucket_policy       = [data.aws_iam_policy_document.bucket_policy.json]
-#   replication_enabled = false
-#   versioning_enabled  = true
-#   force_destroy       = var.force_destroy_bucket
-#   lifecycle_rule = [
-#     {
-#       id      = "main"
-#       enabled = "Enabled"
-#       prefix  = ""
-
-#       tags = {
-#         rule      = "log"
-#         autoclean = "true"
-#       }
-
-#       transition = [
-#         {
-#           days          = 90
-#           storage_class = "STANDARD_IA"
-#           }, {
-#           days          = 180
-#           storage_class = "GLACIER"
-#         }
-#       ]
-
-#       expiration = {
-#         days = 365
-#       }
-
-#       noncurrent_version_transition = [
-#         {
-#           days          = 90
-#           storage_class = "STANDARD_IA"
-#           }, {
-#           days          = 180
-#           storage_class = "GLACIER"
-#         }
-#       ]
-
-#       noncurrent_version_expiration = {
-#         days = 365
-#       }
-#     }
-#   ]
-
-#   tags = var.tags
-# }
-
-# data "aws_iam_policy_document" "bucket_policy" {
-#   # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
-#   #tfsec:ignore:aws-iam-no-policy-wildcards
-#   statement {
-#     effect = "Allow"
-#     actions = [
-#       "s3:PutObject"
-#     ]
-
-#     resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket["reports"].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
-#     principals {
-#       type        = "AWS"
-#       identifiers = [data.aws_elb_service_account.default.arn]
-#     }
-#   }
-#   statement {
-#     sid = "AWSLogDeliveryWrite"
-
-#     principals {
-#       type        = "Service"
-#       identifiers = ["delivery.logs.amazonaws.com"]
-#     }
-
-#     actions = [
-#       "s3:PutObject"
-#     ]
-
-#     resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket["reports"].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
-
-#     condition {
-#       test     = "StringEquals"
-#       variable = "s3:x-amz-acl"
-
-#       values = [
-#         "bucket-owner-full-control"
-#       ]
-#     }
-#   }
-
-#   statement {
-#     sid = "AWSLogDeliveryAclCheck"
-
-#     principals {
-#       type        = "Service"
-#       identifiers = ["delivery.logs.amazonaws.com"]
-#     }
-
-#     actions = [
-#       "s3:GetBucketAcl"
-#     ]
-
-#     resources = [
-#       var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : module.s3-bucket["reports"].bucket.arn
-#     ]
-#   }
-# }
-
-# data "aws_elb_service_account" "default" {}
 data "aws_iam_policy_document" "patch-manager-policy-doc" {
 
   # Not relevant to what we are doing. This sets a high level access policy
@@ -184,9 +66,9 @@ resource "aws_iam_role_policy_attachment" "patch_manager" {
 resource "aws_ssm_maintenance_window" "patch_manager" {
   for_each = var.patch_schedules
   name     = format("%s-%s-%s", var.application_name, "maintenance-window", each.key)
-  schedule = each.value                      # (Required) The schedule of the Maintenance Window in the form of a cron expression.
-  duration = var.maintenance_window_duration # (Required) The duration of the Maintenance Window in hours.
-  cutoff   = var.maintenance_window_cutoff   # (Required) The number of hours before the end of the Maintenance Window that Systems Manager stops scheduling new tasks for execution.
+  schedule = each.value
+  duration = var.maintenance_window_duration
+  cutoff   = var.maintenance_window_cutoff
   tags     = var.tags
 }
 
@@ -227,10 +109,6 @@ resource "aws_ssm_maintenance_window_task" "patch_task" {
         name   = "InstanceId"
         values = ["{{RESOURCE_ID}}"]
       }
-      # parameter {
-      #   name   = "ReportS3Bucket"
-      #   values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket["reports"].bucket.id}"]
-      # }
     }
   }
 }
@@ -300,9 +178,9 @@ resource "aws_ssm_default_patch_baseline" "patch_manager" {
 resource "aws_ssm_maintenance_window" "definition_updates" {
   count    = (var.daily_definition_update == true) ? 1 : 0
   name     = format("%s-%s-%s", var.application_name, "maintenance-window", "definition-updates")
-  schedule = "cron(57 11 * * ? *)" # Every day @8am, (Required) The schedule of the Maintenance Window in the form of a cron expression.
-  duration = 2                     # (Required) This will only take a few mins max, but is counted in hours and needs to be +1 more than the cutoff.
-  cutoff   = 1                     # (Required) The number of hours before the end of the Maintenance Window that Systems Manager stops scheduling new tasks for execution.
+  schedule = "cron(0 8 * * ? *)" # Every day @8am, (Required) The schedule of the Maintenance Window in the form of a cron expression.
+  duration = 2                   # (Required) This will only take a few mins max, but is counted in hours and needs to be +1 more than the cutoff.
+  cutoff   = 1                   # (Required) The number of hours before the end of the Maintenance Window that Systems Manager stops scheduling new tasks for execution.
   tags     = var.tags
 }
 
