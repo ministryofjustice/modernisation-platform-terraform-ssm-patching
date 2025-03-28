@@ -300,9 +300,9 @@ resource "aws_ssm_default_patch_baseline" "patch_manager" {
 resource "aws_ssm_maintenance_window" "definition_updates" {
   count    = (var.daily_definition_update == true) ? 1 : 0
   name     = format("%s-%s-%s", var.application_name, "maintenance-window", "definition-updates")
-  schedule = "cron(0 8 * * * *)" # Every day @8am, (Required) The schedule of the Maintenance Window in the form of a cron expression.
-  duration = 2                 # (Required) This will only take a few mins max, but is counted in hours and needs to be +1 more than the cutoff.
-  cutoff   = 1                 # (Required) The number of hours before the end of the Maintenance Window that Systems Manager stops scheduling new tasks for execution.
+  schedule = "cron(20 11 * * ? *)" # Every day @8am, (Required) The schedule of the Maintenance Window in the form of a cron expression.
+  duration = 2                     # (Required) This will only take a few mins max, but is counted in hours and needs to be +1 more than the cutoff.
+  cutoff   = 1                     # (Required) The number of hours before the end of the Maintenance Window that Systems Manager stops scheduling new tasks for execution.
   tags     = var.tags
 }
 
