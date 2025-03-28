@@ -327,7 +327,7 @@ resource "aws_ssm_maintenance_window_task" "definition_updates" {
   max_errors       = 5
   priority         = 1
   task_type        = "RUN_COMMAND"
-  task_arn         = "AWS-RunPatchBaseline"
+  task_arn         = "AWS-InstallWindowsUpdates"
   window_id        = aws_ssm_maintenance_window.definition_updates[0].id
   service_role_arn = aws_iam_role.patch_manager.arn
 
@@ -339,25 +339,16 @@ resource "aws_ssm_maintenance_window_task" "definition_updates" {
   task_invocation_parameters {
     run_command_parameters {
       document_version = "$LATEST"
-
       parameter {
-        name   = "InstanceId"
-        values = ["{{RESOURCE_ID}}"]
-      }
-      # parameter {
-      #   name   = "ReportS3Bucket"
-      #   values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket["reports"].bucket.id}"]
-      # }
-      parameter {
-        name   = "Operation"
-        values = ["Install"]
+        name   = "Action"
+        values = "Install"
       }
       parameter {
-        name   = "RebootOption"
-        values = ["NoReboot"]
+        name   = "AllowReboot"
+        values = "False"
       }
       parameter {
-        name   = "Classification"
+        name   = "Categories"
         values = ["DefinitionUpdates"]
       }
     }
