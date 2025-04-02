@@ -1,14 +1,14 @@
 terraform {
   required_providers {
     aws = {
-      version               = "~> 5.0"
+      version               = "~> 5.90"
       source                = "hashicorp/aws"
       configuration_aliases = [aws.bucket-replication]
     }
     http = {
       source  = "hashicorp/http"
-      version = "~> 3.3"
+      version = "~> 3.4"
     }
   }
-  required_version = ">= 1.0.1"
+  required_version = ">= 1.10"
 }

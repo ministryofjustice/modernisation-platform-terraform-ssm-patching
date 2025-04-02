@@ -1,128 +1,4 @@
-# Terraform module which creates S3 Bucket resources for Load Balancer Access Logs on AWS.
-
-module "s3-bucket" {
-  count  = var.existing_bucket_name == "" ? 1 : 0
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=8688bc15a08fbf5a4f4eef9b7433c5a417df8df1" # v7.0.0
-
-  providers = {
-    aws.bucket-replication = aws.bucket-replication
-  }
-  bucket_prefix       = "${var.application_name}-ssm${var.suffix}"
-  bucket_policy       = [data.aws_iam_policy_document.bucket_policy.json]
-  replication_enabled = false
-  versioning_enabled  = true
-  force_destroy       = var.force_destroy_bucket
-  lifecycle_rule = [
-    {
-      id      = "main"
-      enabled = "Enabled"
-      prefix  = ""
-
-      tags = {
-        rule      = "log"
-        autoclean = "true"
-      }
-
-      transition = [
-        {
-          days          = 90
-          storage_class = "STANDARD_IA"
-          }, {
-          days          = 365
-          storage_class = "GLACIER"
-        }
-      ]
-
-      expiration = {
-        days = 730
-      }
-
-      noncurrent_version_transition = [
-        {
-          days          = 90
-          storage_class = "STANDARD_IA"
-          }, {
-          days          = 365
-          storage_class = "GLACIER"
-        }
-      ]
-
-      noncurrent_version_expiration = {
-        days = 730
-      }
-    }
-  ]
-
-  tags = var.tags
-}
-
-data "aws_iam_policy_document" "bucket_policy" {
-  # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
-  #tfsec:ignore:aws-iam-no-policy-wildcards
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:PutObject"
-    ]
-
-    resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket[0].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_elb_service_account.default.arn]
-    }
-  }
-  statement {
-    sid = "AWSLogDeliveryWrite"
-
-    principals {
-      type        = "Service"
-      identifiers = ["delivery.logs.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:PutObject"
-    ]
-
-    resources = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}/${var.application_name}/AWSLogs/${var.account_number}/*" : "${module.s3-bucket[0].bucket.arn}/${var.application_name}/AWSLogs/${var.account_number}/*"]
-
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-
-      values = [
-        "bucket-owner-full-control"
-      ]
-    }
-  }
-
-  statement {
-    sid = "AWSLogDeliveryAclCheck"
-
-    principals {
-      type        = "Service"
-      identifiers = ["delivery.logs.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:GetBucketAcl"
-    ]
-
-    resources = [
-      var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : module.s3-bucket[0].bucket.arn
-    ]
-  }
-}
-
-data "aws_elb_service_account" "default" {}
-
-
-###################################################################
-############################# SSM #################################
-###################################################################
-
-###### IAM  #####
-
-data "aws_iam_policy_document" "ssm-admin-policy-doc" {
+data "aws_iam_policy_document" "patch-manager-policy-doc" {
 
   # Not relevant to what we are doing. This sets a high level access policy
   #checkov:skip=CKV_AWS_110: "Ensure IAM policies does not allow privilege escalation"
@@ -151,18 +27,20 @@ data "aws_iam_policy_document" "ssm-admin-policy-doc" {
   }
 }
 
-resource "aws_iam_policy" "ssm-patching-iam-policy" {
-  name        = "ssm-patching-iam-policy${var.suffix}"
+resource "aws_iam_policy" "patch_manager" {
+  name        = "patch-manager-iam-policy"
   description = "IAM Policy for the AWS-PatchAsgInstance automation script that runs as part of the module"
   path        = "/"
-  policy      = data.aws_iam_policy_document.ssm-admin-policy-doc.json
+  policy      = data.aws_iam_policy_document.patch-manager-policy-doc.json
+  tags        = var.tags
 }
 
-resource "aws_iam_role" "ssm-patching-iam-role" {
+resource "aws_iam_role" "patch_manager" {
   # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
   #tfsec:ignore:aws-iam-no-policy-wildcards
 
-  name = "ssm-patching-iam-role${var.suffix}"
+  name = "patch-manager-iam-role"
+  tags = var.tags
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -180,51 +58,47 @@ resource "aws_iam_role" "ssm-patching-iam-role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ssm-admin-automation" {
-  role       = aws_iam_role.ssm-patching-iam-role.name
-  policy_arn = aws_iam_policy.ssm-patching-iam-policy.arn
+resource "aws_iam_role_policy_attachment" "patch_manager" {
+  role       = aws_iam_role.patch_manager.name
+  policy_arn = aws_iam_policy.patch_manager.arn
 }
 
-
-###### ssm maintenance window #####
-
-resource "aws_ssm_maintenance_window" "ssm-maintenance-window" {
-  name     = "${var.application_name}-maintenance-window${var.suffix}"
-  schedule = var.patch_schedule
-  duration = 4 # These could be made into variables if required, however 4 hours seems a long enough duration for patching.
-  cutoff   = 3
+resource "aws_ssm_maintenance_window" "patch_manager" {
+  for_each = var.patch_schedules
+  name     = format("%s-%s-%s", var.application_name, "maintenance-window", each.key)
+  schedule = each.value
+  duration = var.maintenance_window_duration
+  cutoff   = var.maintenance_window_cutoff
+  tags     = var.tags
 }
 
-###### ssm maintenance target #####
-
-resource "aws_ssm_maintenance_window_target" "ssm-maintenance-window-target" {
-  window_id     = aws_ssm_maintenance_window.ssm-maintenance-window.id
-  name          = "maintenance-window-target${var.suffix}"
-  description   = "This is a maintenance window target"
+resource "aws_ssm_maintenance_window_target" "patch_manager" {
+  for_each      = var.patch_schedules
+  window_id     = aws_ssm_maintenance_window.patch_manager[each.key].id
+  name          = format("%s-%s", "maintenance-window-target", each.key)
+  description   = "Targets of the maintenance window by tag key-value pair"
   resource_type = "INSTANCE"
-
   targets {
-    key    = "tag:${var.patch_key}"
-    values = [var.patch_tag]
+    key    = "tag:${var.patch_tag_key}"
+    values = [each.key]
   }
 }
 
-###### ssm automation task #####
-
-resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-task" {
-  name             = "${var.application_name}-automation-patching-task${var.suffix}"
-  description      = "${var.application_name}-automation-patching-task${var.suffix}"
-  max_concurrency  = 20
-  max_errors       = 10
+resource "aws_ssm_maintenance_window_task" "patch_task" {
+  for_each         = var.patch_schedules
+  name             = format("%s-%s-%s", var.application_name, "patch-manager-task", each.key)
+  description      = "Use AWS standard documents to patch the targeted instances in a controlled manner."
+  max_concurrency  = 10
+  max_errors       = 5
   priority         = 1
   task_type        = "AUTOMATION"
   task_arn         = "AWS-PatchInstanceWithRollback"
-  window_id        = aws_ssm_maintenance_window.ssm-maintenance-window.id
-  service_role_arn = aws_iam_role.ssm-patching-iam-role.arn
+  window_id        = aws_ssm_maintenance_window.patch_manager[each.key].id
+  service_role_arn = aws_iam_role.patch_manager.arn
 
   targets {
     key    = "WindowTargetIds"
-    values = aws_ssm_maintenance_window_target.ssm-maintenance-window-target[*].id
+    values = [aws_ssm_maintenance_window_target.patch_manager[each.key].id]
   }
 
   task_invocation_parameters {
@@ -235,21 +109,16 @@ resource "aws_ssm_maintenance_window_task" "ssm-maintenance-window-automation-ta
         name   = "InstanceId"
         values = ["{{RESOURCE_ID}}"]
       }
-      parameter {
-        name   = "ReportS3Bucket"
-        values = [var.existing_bucket_name != "" ? "arn:aws:s3:::${var.existing_bucket_name}" : "${module.s3-bucket[0].bucket.id}"]
-      }
     }
   }
 }
 
-
 ########### Optionals ############
 
-###### Resource Group  #####
-
-resource "aws_resourcegroups_group" "patch-resource-group" {
-  name = "${var.application_name}-patch-group${var.suffix}"
+resource "aws_resourcegroups_group" "patch_manager" {
+  for_each = var.patch_schedules
+  name     = format("%s-%s-%s", var.application_name, "patch-manager", each.key)
+  tags     = var.tags
   resource_query {
     query = <<JSON
 {
@@ -258,8 +127,8 @@ resource "aws_resourcegroups_group" "patch-resource-group" {
    ],
    "TagFilters":[
       {
-         "Key":"Patching",
-         "Values":["Yes"]
+         "Key":"${var.patch_tag_key}",
+         "Values":["${each.key}"]
       }
    ]
 }
@@ -267,32 +136,17 @@ JSON
   }
 }
 
-###### Approval rule #####
+resource "aws_ssm_patch_baseline" "patch_manager" {
+  for_each = var.patch_classifications
 
-#resource "aws_ssm_patch_baseline" "patch-baseline-poc" {
-#  name             = "${var.application_name}-baseline"
-#  operating_system = var.operating_system
-#
-#  approval_rule {
-#    approve_after_days = var.approval_days
-#    compliance_level   = var.compliance_level
-#
-#    patch_filter {
-#      key    = "CLASSIFICATION"
-#      values = var.patch_classification
-#    }
-#  }
-#}
-
-
-resource "aws_ssm_patch_baseline" "ssm-patch-baseline" {
-  name             = "${var.application_name}-baseline${var.suffix}"
-  description      = "${var.application_name}-baseline${var.suffix}"
-  operating_system = var.operating_system
+  name             = format("%s-%s-%s", var.application_name, each.key, "baseline")
+  description      = join(" ", ["Applies", join(", ", lookup(var.patch_classifications, each.key)), "catagories to", each.key, "OS."])
+  operating_system = each.key
   rejected_patches = var.rejected_patches
+  tags             = var.tags
 
   approval_rule {
-    approve_after_days = var.approval_days
+    approve_after_days = lookup(var.approval_days, var.environment)
     compliance_level   = var.compliance_level
 
     patch_filter {
@@ -302,17 +156,79 @@ resource "aws_ssm_patch_baseline" "ssm-patch-baseline" {
 
     patch_filter {
       key    = "CLASSIFICATION"
-      values = var.patch_classification
+      values = lookup(var.patch_classifications, each.key)
     }
 
     patch_filter {
-      key    = var.operating_system == "WINDOWS" ? "MSRC_SEVERITY" : "SEVERITY"
+      key    = each.key == "WINDOWS" ? "MSRC_SEVERITY" : "SEVERITY"
       values = var.severity
     }
   }
 }
 
-resource "aws_ssm_default_patch_baseline" "ssm-default-patch-baseline" {
-  baseline_id      = aws_ssm_patch_baseline.ssm-patch-baseline.id
-  operating_system = var.operating_system
+resource "aws_ssm_default_patch_baseline" "patch_manager" {
+  for_each = var.patch_classifications
+
+  baseline_id      = aws_ssm_patch_baseline.patch_manager[each.key].id
+  operating_system = each.key
+}
+
+# Definition updates (Defender anti-virus etc) do not require a reboot and should be applied daily.
+
+resource "aws_ssm_maintenance_window" "definition_updates" {
+  count    = (var.daily_definition_update == true) ? 1 : 0
+  name     = format("%s-%s-%s", var.application_name, "maintenance-window", "definition-updates")
+  schedule = "cron(0 8 * * ? *)" # Every day @8am, (Required) The schedule of the Maintenance Window in the form of a cron expression.
+  duration = 2                   # (Required) This will only take a few mins max, but is counted in hours and needs to be +1 more than the cutoff.
+  cutoff   = 1                   # (Required) The number of hours before the end of the Maintenance Window that Systems Manager stops scheduling new tasks for execution.
+  tags     = var.tags
+}
+
+resource "aws_ssm_maintenance_window_target" "definition_updates" {
+  count         = (var.daily_definition_update == true) ? 1 : 0
+  window_id     = aws_ssm_maintenance_window.definition_updates[0].id
+  name          = format("%s-%s", "maintenance-window-target", "definition-updates")
+  description   = "Targets of the Windows definition updates maintenance window by tag key (any value)."
+  resource_type = "INSTANCE"
+
+  targets {
+    key    = "tag:os-type"
+    values = ["Windows"]
+  }
+}
+
+resource "aws_ssm_maintenance_window_task" "definition_updates" {
+  count            = (var.daily_definition_update == true) ? 1 : 0
+  name             = format("%s-%s-%s", var.application_name, "patch-manager-task", "definition-updates")
+  description      = "Use AWS standard documents to patch the targeted instances in a controlled manner."
+  max_concurrency  = 10
+  max_errors       = 5
+  priority         = 1
+  task_type        = "RUN_COMMAND"
+  task_arn         = "AWS-InstallWindowsUpdates"
+  window_id        = aws_ssm_maintenance_window.definition_updates[0].id
+  service_role_arn = aws_iam_role.patch_manager.arn
+
+  targets {
+    key    = "WindowTargetIds"
+    values = [aws_ssm_maintenance_window_target.definition_updates[0].id]
+  }
+
+  task_invocation_parameters {
+    run_command_parameters {
+      document_version = "$LATEST"
+      parameter {
+        name   = "Action"
+        values = ["Install"]
+      }
+      parameter {
+        name   = "AllowReboot"
+        values = ["False"]
+      }
+      parameter {
+        name   = "Categories"
+        values = ["DefinitionUpdates"]
+      }
+    }
+  }
 }
