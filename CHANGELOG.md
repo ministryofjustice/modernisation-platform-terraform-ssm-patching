@@ -2,7 +2,7 @@
 
 FEATURES:
 
-This release sees many improvements and minor fixes and requires some changes to input arguments to integrate multiple patch groups/schedules for single or multiple OSes with a per OS baseline all based on a single module call per AWS account. This dramamatically reduces the amount of associated duplicate resources required to support multiple schedules and/or OSes in each account.
+This release sees many improvements and minor fixes and requires some changes to input arguments to integrate multiple patch groups/schedules for single or multiple OSes with a per OS baseline all based on a single module call per AWS account. This dramatically reduces the amount of associated duplicate resources required to support multiple schedules and/or OSes in each account.
 
 When targeting the "WINDOWS" OS it also optionally creates a separate definition-only update schedule (that doesn't require reboots) which allows defender etc to receive updates on an MS recommended daily basis.
 
