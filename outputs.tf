@@ -1,19 +1,19 @@
-output "patch-resource-group-arn" {
-  description = "The resource group arn for patching"
-  value       = try(aws_resourcegroups_group.patch-resource-group.arn, "")
+output "patch_resource_group_arns" {
+  description = "The resource group arn(s) for patching"
+  value       = try(aws_resourcegroups_group.patch_manager[*].arn, "")
 }
 
-output "maintenance-window-id" {
-  description = "The maintenance window id"
-  value       = try(aws_ssm_maintenance_window.ssm-maintenance-window.id, "")
+output "maintenance_window_ids" {
+  description = "The maintenance window id(s)"
+  value       = try(aws_ssm_maintenance_window.patch_manager[*].id, "")
 }
 
-output "maintenance-window-target-id" {
-  description = "The target id for the maintenance window"
-  value       = try(aws_ssm_maintenance_window_target.ssm-maintenance-window-target.id, "")
+output "maintenance_window_target_ids" {
+  description = "The target id(s) for the maintenance window"
+  value       = try(aws_ssm_maintenance_window_target.patch_manager[*].id, "")
 }
 
-output "iam-policy-arn" {
+output "iam_policy_arn" {
   description = "The policy arn for the IAM policy used by the automation script"
-  value       = try(aws_iam_role_policy_attachment.ssm-admin-automation.policy_arn, "")
+  value       = try(aws_iam_role_policy_attachment.patch_manager.policy_arn, "")
 }
