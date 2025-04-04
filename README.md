@@ -20,6 +20,7 @@ module "ssm-patching" {
   count                 = local.environment == "development" ? 1 : 0
   providers             = { aws.bucket-replication = aws }
   account_number        = local.environment_management.account_ids[terraform.workspace]
+  environment           = "development"
   application_name      = local.application_name
   patch_classifications = {
     WINDOWS = ["SecurityUpdates", "CriticalUpdates", "DefinitionUpdates"]
@@ -55,7 +56,8 @@ module "patch_manager" {
   source                      = "github.com/ministryofjustice/modernisation-platform-terraform-ssm-patching.git?ref="
   providers                   = { aws.bucket-replication = aws }
   account_number              = local.environment_management.account_ids[terraform.workspace] # Required
-  application_name            = local.application_name                                        # Required 
+  application_name            = local.application_name                                        # Required
+  environment                 = local.environment                                             # Required
   patch_schedules             = local.patch_manager.patch_schedules
   maintenance_window_cutoff   = local.patch_manager.maintenance_window_cutoff
   maintenance_window_duration = local.patch_manager.maintenance_window_duration
@@ -81,7 +83,7 @@ If you're looking to raise an issue with this module, please create a new issue 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.90 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | ~> 3.4 |
 

@@ -18,13 +18,13 @@ func TestModule(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	maintenanceWindowId := terraform.Output(t, terraformOptions, "maintenance-window-id")
-	patchResourceGroupArn := terraform.Output(t, terraformOptions, "patch-resource-group-arn")
-	maintenanceWindowTargetId := terraform.Output(t, terraformOptions, "maintenance-window-target-id")
-    iamPolicyArn := terraform.Output(t, terraformOptions, "iam-policy-arn")
+	maintenanceWindowIds := terraform.Output(t, terraformOptions, "maintenance_window_ids")
+	patchResourceGroupArns := terraform.Output(t, terraformOptions, "patch_resource_group_arns")
+	maintenanceWindowTargetIds := terraform.Output(t, terraformOptions, "maintenance_window_target_ids")
+    iamPolicyArn := terraform.Output(t, terraformOptions, "iam_policy_arn")
 
-	assert.Regexp(t, regexp.MustCompile(`^mw-*`), maintenanceWindowId)
-	assert.Regexp(t, regexp.MustCompile(`^arn:aws:resource-groups:*`), patchResourceGroupArn)
-	assert.Regexp(t, regexp.MustCompile(`^*`), maintenanceWindowTargetId)
+	assert.Regexp(t, regexp.MustCompile(`^\[mw-[^,]+(,mw-[^,]+)*\]$`), maintenanceWindowIds)
+	assert.Regexp(t, regexp.MustCompile(`^\[arn:aws:resource-groups:*`), patchResourceGroupArns)
+	assert.Regexp(t, regexp.MustCompile(`^*`), maintenanceWindowTargetIds)
     assert.Regexp(t, regexp.MustCompile(`^arn:aws:iam:*`), iamPolicyArn)
 }
