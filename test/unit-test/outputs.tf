@@ -1,19 +1,19 @@
-output "patch-resource-group-arn" {
+output "patch_resource_group_arns" {
   description = "The resource group arn for patching"
-  value       = module.ssm-auto-patching.patch-resource-group-arn
+  value       = module.ssm_auto_patching.patch_resource_group_arns
 }
 
-output "maintenance-window-id" {
+output "maintenance_window_ids" {
   description = "The maintenance window id"
-  value       = module.ssm-auto-patching.maintenance-window-id
+  value       = module.ssm_auto_patching.maintenance_window_ids
 }
 
-output "maintenance-window-target-id" {
+output "maintenance_window_target_ids" {
   description = "The target id for the maintenance window"
-  value       = module.ssm-auto-patching.maintenance-window-target-id
+  value       = module.ssm_auto_patching.maintenance_window_target_ids
 }
 
-output "iam-policy-arn" {
+output "iam_policy_arn" {
   description = "The policy arn for the IAM policy used by the automation script"
-  value       = module.ssm-auto-patching.iam-policy-arn
+  value       = module.ssm_auto_patching.iam_policy_arn
 }

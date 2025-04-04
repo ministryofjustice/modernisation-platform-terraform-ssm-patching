@@ -1,4 +1,4 @@
-module "ssm-auto-patching" {
+module "ssm_auto_patching" {
   source = "../../"
   providers = {
     aws.bucket-replication = aws
@@ -6,7 +6,13 @@ module "ssm-auto-patching" {
 
   account_number   = local.environment_management.account_ids["testing-test"]
   application_name = local.application_name
-  patch_schedule   = "cron(30 17 ? * MON *)"
+  environment      = "test"
+  patch_schedules = {
+    group1 = "cron(30 17 ? * MON *)"
+  }
+  patch_classifications = {
+    WINDOWS = ["SecurityUpdates", "CriticalUpdates", "DefinitionUpdates"]
+  }
   tags = merge(
     local.tags,
     {
