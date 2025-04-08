@@ -4,6 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      action-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: "terraform"
     directory: "/"
     schedule:
@@ -12,3 +16,7 @@ updates:
     directory: "/test"
     schedule:
       interval: "daily"
+    groups:
+      gomod-dependencies:
+        patterns:
+          - "*"
