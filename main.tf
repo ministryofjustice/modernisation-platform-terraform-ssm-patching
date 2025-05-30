@@ -13,8 +13,7 @@ data "aws_iam_policy_document" "patch-manager-policy-doc" {
 
     # Ignore this check on tfsec - it causes a fail on resources *. The resource is required for patching purposes
     #tfsec:ignore:aws-iam-no-policy-wildcards
-    actions = ["s3:*",
-      "ec2:*",
+    actions = ["ec2:*",
       "ssm:*",
       "cloudwatch:*",
       "cloudformation:*",
