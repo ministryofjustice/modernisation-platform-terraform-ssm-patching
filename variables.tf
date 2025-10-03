@@ -76,3 +76,9 @@ variable "daily_definition_update" {
   description = "Create an additional schedule for Windows instances to update definitions every day (no reboot required), Uses tag:os-type = Windows as targets."
   default     = false
 }
+
+variable "simple_patching" {
+  type        = bool
+  description = "Set to true to use AWS-RunPatchBaseline directly, instead of AWS-PatchInstanceWithRollback which is a wrapper that adds sophisticated orchestration and lambda logs etc."
+  default     = false
+}
