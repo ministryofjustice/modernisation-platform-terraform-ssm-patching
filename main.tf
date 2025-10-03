@@ -110,6 +110,10 @@ resource "aws_ssm_maintenance_window_task" "patch_task" {
           name   = "Operation"
           values = ["Install"]
         }
+        parameter {
+          name   = "RebootOption"
+          values = ["RebootIfNeeded"]
+        }
       }
     }
 
