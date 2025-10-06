@@ -84,15 +84,15 @@ If you're looking to raise an issue with this module, please create a new issue 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.100 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | ~> 3.4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.100 |
 
 ## Modules
 
@@ -134,8 +134,8 @@ No modules.
 | <a name="input_product"></a> [product](#input\_product) | The specific product the patch is applicable for e.g. RedhatEnterpriseLinux8.5, WindowsServer2022 | `list(string)` | <pre>[<br/>  "*"<br/>]</pre> | no |
 | <a name="input_rejected_patches"></a> [rejected\_patches](#input\_rejected\_patches) | List of patches to be rejected | `list(string)` | `[]` | no |
 | <a name="input_severity"></a> [severity](#input\_severity) | Severity of the patch e.g. Critical, Important, Medium, Low | `list(string)` | <pre>[<br/>  "*"<br/>]</pre> | no |
+| <a name="input_simple_patching"></a> [simple\_patching](#input\_simple\_patching) | Set to true to use AWS-RunPatchBaseline directly, instead of AWS-PatchInstanceWithRollback which is a wrapper that adds sophisticated orchestration and lambda logs etc. | `bool` | `false` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common tags to be used by all resources | `map(string)` | n/a | yes |
-| <a name="simple_patching"></a> [simple\_patching](#input\_simple\_patching) | Setting this to true uses AWS-RunPatchBaseline directly, instead of AWS-PatchInstanceWithRollback which is a wrapper that adds sophisticated orchestration and associated lambda cloudwatch log groups. | `bool` | false | no |
 
 ## Outputs
 
