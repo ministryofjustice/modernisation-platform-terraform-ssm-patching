@@ -90,8 +90,8 @@ resource "aws_ssm_maintenance_window_task" "patch_task" {
   max_concurrency  = 10
   max_errors       = 5
   priority         = 1
-  task_type        = "AUTOMATION"
-  task_arn         = "AWS-PatchInstanceWithRollback"
+  task_type        = var.simple_patching ? "RUN_COMMAND" : "AUTOMATION"
+  task_arn         = var.simple_patching ? "AWS-RunPatchBaseline" : "AWS-PatchInstanceWithRollback"
   window_id        = aws_ssm_maintenance_window.patch_manager[each.key].id
   service_role_arn = aws_iam_role.patch_manager.arn
 
@@ -101,12 +101,31 @@ resource "aws_ssm_maintenance_window_task" "patch_task" {
   }
 
   task_invocation_parameters {
-    automation_parameters {
-      document_version = "$LATEST"
+    dynamic "run_command_parameters" {
+      for_each = var.simple_patching ? [1] : []
+      content {
+        document_version = "$LATEST"
 
-      parameter {
-        name   = "InstanceId"
-        values = ["{{RESOURCE_ID}}"]
+        parameter {
+          name   = "Operation"
+          values = ["Install"]
+        }
+        parameter {
+          name   = "RebootOption"
+          values = ["RebootIfNeeded"]
+        }
+      }
+    }
+
+    dynamic "automation_parameters" {
+      for_each = var.simple_patching ? [] : [1]
+      content {
+        document_version = "$LATEST"
+
+        parameter {
+          name   = "InstanceId"
+          values = ["{{RESOURCE_ID}}"]
+        }
       }
     }
   }

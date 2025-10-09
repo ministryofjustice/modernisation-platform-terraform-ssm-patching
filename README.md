@@ -63,12 +63,13 @@ module "patch_manager" {
   maintenance_window_duration = local.patch_manager.maintenance_window_duration
   patch_classifications       = local.patch_manager.patch_classifications                     # Required
   daily_definition_update     = local.patch_manager.daily_definition_update
+  simple_patching             = true
   tags                        = merge(local.tags, { Name = "ssm-patching-module" },)
 }
 
 ```
 
-This v4 removes the archiving of reports to S3 bucket to reduce complexity and cost, as all results and Patch compliance findings are exported to Security Hub by default.
+Version 4 removed the archiving of reports to S3 bucket to reduce complexity and cost, as all results and Patch compliance findings are exported to Security Hub by default.
 
 <!--- BEGIN_TF_DOCS --->
 
@@ -83,7 +84,7 @@ If you're looking to raise an issue with this module, please create a new issue 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | ~> 3.4 |
 
@@ -133,6 +134,7 @@ No modules.
 | <a name="input_product"></a> [product](#input\_product) | The specific product the patch is applicable for e.g. RedhatEnterpriseLinux8.5, WindowsServer2022 | `list(string)` | <pre>[<br/>  "*"<br/>]</pre> | no |
 | <a name="input_rejected_patches"></a> [rejected\_patches](#input\_rejected\_patches) | List of patches to be rejected | `list(string)` | `[]` | no |
 | <a name="input_severity"></a> [severity](#input\_severity) | Severity of the patch e.g. Critical, Important, Medium, Low | `list(string)` | <pre>[<br/>  "*"<br/>]</pre> | no |
+| <a name="input_simple_patching"></a> [simple\_patching](#input\_simple\_patching) | Set to true to use AWS-RunPatchBaseline directly, instead of AWS-PatchInstanceWithRollback which is a wrapper that adds sophisticated orchestration and lambda logs etc. | `bool` | `false` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common tags to be used by all resources | `map(string)` | n/a | yes |
 
 ## Outputs
