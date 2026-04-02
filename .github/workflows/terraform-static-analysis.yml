@@ -1,5 +1,4 @@
 name: Terraform Static Code Analysis
-
 on:
   workflow_dispatch:
   pull_request:
@@ -8,10 +7,8 @@ on:
     paths:
       - '**.tf'
       - '.github/workflows/terraform-static-analysis.yml'
-
 permissions:
   contents: read
-
 jobs:
   terraform-static-analysis:
     permissions:
@@ -24,6 +21,11 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+
+      # ⛓️ SLSA - must run after checkout, before any dependency installation
+      - name: ⛓️ SLSA Supply Chain Security
+        uses: ministryofjustice/devsecops-actions/sca/slsa@3e9410cef31dd9cec64ad567efc959afd88a591c
+
       - name: Run Analysis
         uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@5b44b387694dfa249cfa2dcf289ca871abe9e3e2 # v5.0.1
         env:
@@ -36,7 +38,6 @@ jobs:
           tflint_exclude: terraform_unused_declarations
           tflint_call_module_type: none
           tfsec_trivy: trivy
-  
 
   terraform-static-analysis-full-scan:
     permissions:
@@ -45,17 +46,22 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
-    - name: Checkout
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      with:
-        fetch-depth: 0
-    - name: Run Analysis
-      uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@5b44b387694dfa249cfa2dcf289ca871abe9e3e2 # v5.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        scan_type: full
-        tfsec_exclude: AWS089, AWS099, AWS009, AWS097, AWS018
-        checkov_exclude: CKV_GIT_1
-        tflint_exclude: terraform_unused_declarations
-        tflint_call_module_type: none
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      # ⛓️ SLSA - must run after checkout, before any dependency installation
+      - name: ⛓️ SLSA Supply Chain Security
+        uses: ministryofjustice/devsecops-actions/sca/slsa@3e9410cef31dd9cec64ad567efc959afd88a591c
+
+      - name: Run Analysis
+        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@5b44b387694dfa249cfa2dcf289ca871abe9e3e2 # v5.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          scan_type: full
+          tfsec_exclude: AWS089, AWS099, AWS009, AWS097, AWS018
+          checkov_exclude: CKV_GIT_1
+          tflint_exclude: terraform_unused_declarations
+          tflint_call_module_type: none
