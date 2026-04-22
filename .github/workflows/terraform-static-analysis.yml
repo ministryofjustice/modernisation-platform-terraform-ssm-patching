@@ -24,10 +24,10 @@ jobs:
 
       # ⛓️ SLSA - must run after checkout, before any dependency installation
       - name: ⛓️ SLSA Supply Chain Security
-        uses: ministryofjustice/devsecops-actions/sca/slsa@5ae565f8d47a0c29830bb75ef75b6f35fce45af1 # main
+        uses: ministryofjustice/devsecops-actions/sca/slsa@5fc4b3e73c559ecb4cfa08284159efea4ea18836 # main
 
       - name: Run Analysis
-        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@5b44b387694dfa249cfa2dcf289ca871abe9e3e2 # v5.0.1
+        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@544c7bb214758a098b054014fa16ab86bad305b5 # v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -53,10 +53,10 @@ jobs:
 
       # ⛓️ SLSA - must run after checkout, before any dependency installation
       - name: ⛓️ SLSA Supply Chain Security
-        uses: ministryofjustice/devsecops-actions/sca/slsa@5ae565f8d47a0c29830bb75ef75b6f35fce45af1 # main
+        uses: ministryofjustice/devsecops-actions/sca/slsa@5fc4b3e73c559ecb4cfa08284159efea4ea18836 # main
 
       - name: Run Analysis
-        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@5b44b387694dfa249cfa2dcf289ca871abe9e3e2 # v5.0.1
+        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@544c7bb214758a098b054014fa16ab86bad305b5 # v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
