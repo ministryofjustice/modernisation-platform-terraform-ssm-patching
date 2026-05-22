@@ -22,10 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ⛓️ SLSA - must run after checkout, before any dependency installation
-      - name: ⛓️ SLSA Supply Chain Security
-        uses: ministryofjustice/devsecops-actions/sca/slsa@5ae565f8d47a0c29830bb75ef75b6f35fce45af1 # main
-
       - name: Run Analysis
         uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@91d5c1efbe43e1c8fdfc55fd39e8183fc6be8fa8 # v6.1.1
         env:
@@ -47,10 +43,6 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-
-      # ⛓️ SLSA - must run after checkout, before any dependency installation
-      - name: ⛓️ SLSA Supply Chain Security
-        uses: ministryofjustice/devsecops-actions/sca/slsa@5ae565f8d47a0c29830bb75ef75b6f35fce45af1 # main
 
       - name: Run Analysis
         uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@91d5c1efbe43e1c8fdfc55fd39e8183fc6be8fa8 # v6.1.1
