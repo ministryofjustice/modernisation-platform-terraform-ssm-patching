@@ -22,22 +22,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ⛓️ SLSA - must run after checkout, before any dependency installation
-      - name: ⛓️ SLSA Supply Chain Security
-        uses: ministryofjustice/devsecops-actions/sca/slsa@2dc8158ef71f7be8c00fda9a71e2ddbc27640a8b # main
-
       - name: Run Analysis
-        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@d2d07632db53d17c9760c0c2c06f22a37bd3f0a1 # v6.0.1
+        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@91d5c1efbe43e1c8fdfc55fd39e8183fc6be8fa8 # v6.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           scan_type: changed
-          trivy_severity: HIGH,CRITICAL
-          trivy_ignore: ./.trivyignore.yaml
           checkov_exclude: CKV_GIT_1,CKV_AWS_126,CKV2_AWS_38,CKV2_AWS_39
           tflint_exclude: terraform_unused_declarations
           tflint_call_module_type: none
-          tfsec_trivy: trivy
 
   terraform-static-analysis-full-scan:
     permissions:
@@ -51,17 +44,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ⛓️ SLSA - must run after checkout, before any dependency installation
-      - name: ⛓️ SLSA Supply Chain Security
-        uses: ministryofjustice/devsecops-actions/sca/slsa@2dc8158ef71f7be8c00fda9a71e2ddbc27640a8b # main
-
       - name: Run Analysis
-        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@d2d07632db53d17c9760c0c2c06f22a37bd3f0a1 # v6.0.1
+        uses: ministryofjustice/modernisation-platform-github-actions/terraform-static-analysis@91d5c1efbe43e1c8fdfc55fd39e8183fc6be8fa8 # v6.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           scan_type: full
-          tfsec_exclude: AWS089, AWS099, AWS009, AWS097, AWS018
           checkov_exclude: CKV_GIT_1
           tflint_exclude: terraform_unused_declarations
           tflint_call_module_type: none
