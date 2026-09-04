@@ -1,28 +1,63 @@
 version: 2
 updates:
+  # ---------------------------------------------------------------------------
+  # Dependency management strategy (ref: ministryofjustice/modernisation-platform#8211)
+  #
+  # Tiered by update severity to reduce Dependabot PR noise while still keeping
+  # technical debt under control:
+  #   - Major updates:       isolated into their own grouped PR for deliberate,
+  #                          reviewed handling of potential breaking changes.
+  #   - Minor/patch updates: grouped and raised on the slowest cadence Dependabot
+  #                          supports (monthly), drastically reducing churn.
+  #   - Security updates:    handled separately by Dependabot security updates
+  #                          (enabled in repo/org settings, not in this file).
+  #
+  # NOTE: Dependabot's schedule.interval only supports daily/weekly/monthly, so
+  # the strategy's "majors every 2 weeks" and "minor/patch every 6 months" are
+  # approximated with "monthly". See the Ways of Engineering note below.
+  # ---------------------------------------------------------------------------
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
-      action-dependencies:
-        patterns:
-          - "*"
+      action-major:
+        update-types:
+          - "major"
+      action-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
   - package-ecosystem: "terraform"
     directory: "/"
     schedule:
-      interval: "daily"
-    cooldown:
-      default-days: 7
-  - package-ecosystem: "gomod"
-    directory: "/test"
-    schedule:
-      interval: "daily"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
-      gomod-dependencies:
-        patterns:
-          - "*"
+      terraform-major:
+        update-types:
+          - "major"
+      terraform-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "gomod"
+    directory: "/test"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    groups:
+      gomod-major:
+        update-types:
+          - "major"
+      gomod-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
