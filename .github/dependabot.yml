@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"        # was daily
     cooldown:
       default-days: 7
     groups:
@@ -13,13 +13,13 @@ updates:
   - package-ecosystem: "terraform"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"       # was daily
     cooldown:
       default-days: 7
   - package-ecosystem: "gomod"
     directory: "/test"
     schedule:
-      interval: "daily"
+      interval: "weekly"        # was daily
     cooldown:
       default-days: 7
     groups:
