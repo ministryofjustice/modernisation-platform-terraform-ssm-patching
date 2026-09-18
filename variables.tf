@@ -24,6 +24,11 @@ variable "approval_days" {
     production    = 7
   }
 }
+variable "approval_date" {
+  type        = map(string)
+  description = "A map of environment and cut off date in YYYY-MM-DD format for patches, used by the approval rule only and is an alternative to approval_days. Use patch_classifications_cutoff_type to use this option"
+  default     = null
+}
 variable "compliance_level" {
   type        = string
   description = "Select the level of compliance, used by the approval rule only, and is not required for the automation script. By default it's CRITICAL"
@@ -33,6 +38,11 @@ variable "patch_classifications" {
   type        = map(list(string))
   description = "Maps an OS against a list of patch classification catagories"
   # "Windows Options=(CriticalUpdates,SecurityUpdates,DefinitionUpdates,Drivers,FeaturePacks,ServicePacks,Tools,UpdateRollups,Updates,Upgrades), Linux Options=(Security,Bugfix,Enhancement,Recommended,Newpackage)"
+}
+variable "patch_classifications_cutoff_type" {
+  type        = map(string)
+  description = "Maps an OS against a cutoff type. If set to days, use approval_days, if set to date, use approval_date. Default is approval_days"
+  default     = {}
 }
 variable "severity" {
   type        = list(string)

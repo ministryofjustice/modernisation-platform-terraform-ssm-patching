@@ -164,7 +164,8 @@ resource "aws_ssm_patch_baseline" "patch_manager" {
   tags             = var.tags
 
   approval_rule {
-    approve_after_days = lookup(var.approval_days, var.environment)
+    approve_after_days = lookup(var.patch_classifications_cutoff_type, each.key, "days") == "days" ? lookup(var.approval_days, var.environment) : null
+    approve_until_date = lookup(var.patch_classifications_cutoff_type, each.key, "days") == "date" ? lookup(var.approval_date, var.environment) : null
     compliance_level   = var.compliance_level
 
     patch_filter {
