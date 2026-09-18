@@ -34,13 +34,27 @@ However, it is expected you may want to add multiple patch groups with your own 
 
 ```hcl
 
-# Example with 2 patch groups with associated schedules and 2 supported OSes with associated classifications.
+# Example for an application with 4 environments with automated updates
+# required for windows instances and manual updates for linux instances.
+#
+# In this example, patch_schedules and approval_days are configured so
+# the same set of patches are applied in each environment starting with
+# the lower environments. Windows EC2 instances opt in to the automatic
+# patch schedule by adding a patch-manager tag with the value matching
+# the corresponding patch schedule, e.g. `development`.
+#
+# For manual patching, use the approval_date option instead to ensure
+# the same set of patches are applied in each environment. In this
+# example, a new set of patches is being tested in development
+# prior to being rolled out to higher environments.
 
 locals {
   patch_manager = {
     patch_schedules = {
-      group1 = "cron(00 03 ? * WED *)"
-      group2 = "cron(00 03 ? * THU *)"
+      development   = "cron(00 03 ? * TUE#1 *)"
+      test          = "cron(00 03 ? * TUE#2 *)"
+      preproduction = "cron(00 03 ? * TUE#3 *)"
+      production    = "cron(00 03 ? * THU#3 *)"
     }
     maintenance_window_duration = 4
     maintenance_window_cutoff   = 2
@@ -49,22 +63,41 @@ locals {
       REDHAT_ENTERPRISE_LINUX = ["Security", "Bugfix"]
       WINDOWS                 = ["SecurityUpdates", "CriticalUpdates", "DefinitionUpdates"]
     }
+    patch_classifications_cutoff_type = {
+      REDHAT_ENTERPRISE_LINUX = "date"
+      WINDOWS                 = "days"
+    }
+    approval_days = {
+      development   = 3
+      test          = 10
+      preproduction = 17
+      production    = 19
+    }
+    approval_date = {
+      development   = "2026-09-01"
+      test          = "2026-06-01"
+      preproduction = "2026-06-01"
+      production    = "2026-06-01"
+    }
   }
-}  
+}
 
 module "patch_manager" {
-  source                      = "github.com/ministryofjustice/modernisation-platform-terraform-ssm-patching.git?ref="
-  providers                   = { aws.bucket-replication = aws }
-  account_number              = local.environment_management.account_ids[terraform.workspace] # Required
-  application_name            = local.application_name                                        # Required
-  environment                 = local.environment                                             # Required
-  patch_schedules             = local.patch_manager.patch_schedules
-  maintenance_window_cutoff   = local.patch_manager.maintenance_window_cutoff
-  maintenance_window_duration = local.patch_manager.maintenance_window_duration
-  patch_classifications       = local.patch_manager.patch_classifications                     # Required
-  daily_definition_update     = local.patch_manager.daily_definition_update
-  simple_patching             = true
-  tags                        = merge(local.tags, { Name = "ssm-patching-module" },)
+  source                            = "github.com/ministryofjustice/modernisation-platform-terraform-ssm-patching.git?ref="
+  providers                         = { aws.bucket-replication = aws }
+  account_number                    = local.environment_management.account_ids[terraform.workspace] # Required
+  application_name                  = local.application_name                                        # Required
+  environment                       = local.environment                                             # Required
+  patch_schedules                   = local.patch_manager.patch_schedules
+  approval_days                     = local.patch_manager.approval_days
+  approval_date                     = local.patch_manager.approval_date
+  maintenance_window_cutoff         = local.patch_manager.maintenance_window_cutoff
+  maintenance_window_duration       = local.patch_manager.maintenance_window_duration
+  patch_classifications             = local.patch_manager.patch_classifications                     # Required
+  patch_classifications_cutoff_type = local.patch_manager.patch_classifications_cutoff_type
+  daily_definition_update           = local.patch_manager.daily_definition_update
+  simple_patching                   = true
+  tags                              = merge(local.tags, { Name = "ssm-patching-module" },)
 }
 
 ```
