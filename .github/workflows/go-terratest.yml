@@ -1,4 +1,6 @@
-on:
+---
+name: Unit-Tests
+"on":
   pull_request:
     types: [opened, edited, reopened, synchronize]
 
