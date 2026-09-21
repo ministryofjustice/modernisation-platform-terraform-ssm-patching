@@ -29,4 +29,3 @@ jobs:
         --skip-check CKV_GIT_1
       tflint_arguments: >-
         --disable-rule=terraform_unused_declarations
-

@@ -157,14 +157,22 @@ JSON
 resource "aws_ssm_patch_baseline" "patch_manager" {
   for_each = var.patch_classifications
 
-  name             = format("%s-%s-%s", var.application_name, each.key, "baseline")
-  description      = join(" ", ["Applies", join(", ", lookup(var.patch_classifications, each.key)), "catagories to", each.key, "OS."])
+  name = format("%s-%s-%s", var.application_name, each.key, "baseline")
+
+  description = join(" ", [
+    "Applies",
+    join(", ", each.value),
+    "categories to",
+    each.key,
+    "OS.",
+  ])
+
   operating_system = each.key
   rejected_patches = var.rejected_patches
   tags             = var.tags
 
   approval_rule {
-    approve_after_days = lookup(var.approval_days, var.environment)
+    approve_after_days = var.approval_days[var.environment]
     compliance_level   = var.compliance_level
 
     patch_filter {
@@ -174,7 +182,7 @@ resource "aws_ssm_patch_baseline" "patch_manager" {
 
     patch_filter {
       key    = "CLASSIFICATION"
-      values = lookup(var.patch_classifications, each.key)
+      values = each.value
     }
 
     patch_filter {
