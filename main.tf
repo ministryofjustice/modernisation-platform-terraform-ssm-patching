@@ -169,7 +169,7 @@ resource "aws_ssm_patch_baseline" "patch_manager" {
 
   operating_system = each.key
   rejected_patches = var.rejected_patches
-  tags              = var.tags
+  tags             = var.tags
 
   approval_rule {
     approve_after_days = var.approval_days[var.environment]
