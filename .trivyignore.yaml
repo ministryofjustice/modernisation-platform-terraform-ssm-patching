@@ -34,6 +34,10 @@ vulnerabilities:
   - id: CVE-2024-21626
     expired_at: 2024-08-19
     statement: "Review in 6 months"
+  - id: GO-2025-3922
+    statement: "golang.org/x/sync vulnerability - latest version has same issue"
+  - id: GO-2026-5932
+    statement: "golang.org/x/crypto/openpgp is unmaintained by design; cannot be fixed by updating version"
 
 misconfigurations:
   - id: AVD-GIT-0001
