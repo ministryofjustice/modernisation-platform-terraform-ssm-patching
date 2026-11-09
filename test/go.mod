@@ -1,6 +1,6 @@
 module github.com/ministryofjustice/modernisation-platform-terraform-ssm-patching
 
-go 1.27.0
+go 1.27
 
 require (
 	github.com/gruntwork-io/terratest v1.0.1
